@@ -1,11 +1,14 @@
 <?php
+
+header('Content-Type: text/plain');
+
 require_once __DIR__ . '/../../ActiveRecord.php';
 
 // initialize ActiveRecord
 ActiveRecord\Config::initialize(function($cfg)
 {
     $cfg->setModelDirectory(__DIR__ . '/models');
-    $cfg->setConnections(array('development' => 'mysql://test:test@127.0.0.1/orders_test'));
+    $cfg->setConnections(array('development' => 'mysql://test:test@127.0.0.1/test'));
 
 	// you can change the default connection with the below
     //$cfg->setDefaultConnection('production');
@@ -26,7 +29,7 @@ $coal    = $tito->createOrders(array('item_name' => 'Lump of Coal', 'price' => 1
 $freebie = $tito->createOrders(array('item_name' => 'Freebie', 'price' => -100.99));
 
 if (count($freebie->errors) > 0)
-	echo "[FAILED] saving order $freebie->itemName: " . join(', ',$freebie->errors->fullMessages()) . "\n\n";
+	echo "[FAILED] saving order $freebie->item_name: " . join(', ',$freebie->errors->fullMessages()) . "\n\n";
 
 // payments
 $pokemon->createPayments(array('amount' => 1.99, 'person_id' => $tito->id));
@@ -41,7 +44,7 @@ echo "$tito->name has " . count($tito->orders) . " orders for: " . join(', ',Act
 // get all orders placed by Tito
 foreach (Order::findAllByPersonId($tito->id) as $order)
 {
-	echo "Order #$order->id for $order->itemName ($$order->price + $$order->tax tax) ordered by " . $order->person->name . "\n";
+	echo "Order #$order->id for $order->item_name ($$order->price + $$order->tax tax) ordered by " . $order->person->name . "\n";
 
 	if (count($order->payments) > 0)
 	{
@@ -72,7 +75,7 @@ foreach (Person::all($conditions) as $person)
 // this means our people in the loop below also has the payment information since it is part of an inner join
 // we will only see 2 of the people instead of 3 because 1 of the payments is greater than 200
 $order = Order::find($pokemon->id);
-echo "Order #$order->id for $order->itemName ($$order->price + $$order->tax tax)\n";
+echo "Order #$order->id for $order->item_name ($$order->price + $$order->tax tax)\n";
 
 foreach ($order->people as $person)
 	echo "  payment of $$person->amount by " . $person->name . "\n";

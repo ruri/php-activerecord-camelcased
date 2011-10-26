@@ -66,7 +66,7 @@ class SQLBuilder
 	 */
 	public function toS()
 	{
-		$func = 'build_' . strtolower($this->operation);
+		$func = 'build' . ucwords(strtolower($this->operation));
 		return $this->$func();
 	}
 

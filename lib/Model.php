@@ -1306,6 +1306,9 @@ class Model
 	 */
 	public static function __callStatic($method, $args)
 	{
+		// TODO: Remove this bad fix, rewrite the code below properly.
+		$method = strtolower(Inflector::instance()->underscorify($method));
+		
 		$options = static::extractAndValidateOptions($args);
 		$create = false;
 
@@ -1355,13 +1358,15 @@ class Model
 	public function __call($method, $args)
 	{
 		//check for build|create_association methods
-		if (preg_match('/(build|create)_/', $method))
+		if (preg_match('/^(?:build|create)/', $method))
 		{
 			if (!empty($args))
 				$args = $args[0];
-
-			$associationName = str_replace(array('build_', 'create_'), '', $method);
-			$method = str_replace($associationName, 'association', $method);
+			
+			// TODO: Think over how to rewrite this code.
+			$associationName = str_replace(array('build', 'create'), '', $method);
+			$method = str_replace($associationName, 'Association', $method);
+			$associationName = strtolower($associationName);
 			$table = static::table();
 
 			if (($association = $table->getRelationship($associationName)) ||

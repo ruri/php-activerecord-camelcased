@@ -13,7 +13,7 @@ class AuthorWithNonModelRelationship extends ActiveRecord\Model
 class RelationshipTest extends DatabaseTest
 {
 	protected $relationshipName;
-	protected $relationshipNames = array('has_many', 'belongs_to', 'has_one');
+	protected $relationshipNames = array('hasMany', 'belongsTo', 'hasOne');
 
 	public function setUp($connectionName=null)
 	{
@@ -39,15 +39,15 @@ class RelationshipTest extends DatabaseTest
 
 		switch ($type)
 		{
-			case 'belongs_to';
+			case 'belongsTo';
 				$ret = Event::find(5);
 				break;
 
-			case 'has_one';
+			case 'hasOne';
 				$ret = Employee::find(1);
 				break;
 
-			case 'has_many';
+			case 'hasMany';
 				$ret = Venue::find(2);
 				break;
 		}
