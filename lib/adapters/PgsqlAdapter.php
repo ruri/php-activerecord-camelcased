@@ -94,7 +94,7 @@ SQL;
 
 		if ($column['default'])
 		{
-			preg_match("/^nextval\('(.*)'\)$/",$column['default'],$matches);
+			preg_match('/^nextval\(\'(.*)\'\)$/',$column['default'],$matches);
 
 			if (count($matches) == 2)
 				$c->sequence = $matches[1];

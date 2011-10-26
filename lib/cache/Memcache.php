@@ -24,7 +24,7 @@ class Memcache
 		$options['port'] = isset($options['port']) ? $options['port'] : self::DEFAULT_PORT;
 
 		if (!$this->memcache->connect($options['host'],$options['port']))
-			throw new CacheException("Could not connect to $options[host]:$options[port]");
+			throw new Exception("Could not connect to $options[host]:$options[port]");
 	}
 
 	public function flush()
