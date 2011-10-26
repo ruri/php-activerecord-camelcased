@@ -90,13 +90,13 @@ class ValidatesNumericalityOfTest extends DatabaseTest
 
 	public function testValidNull()
 	{
-		BookNumericality::$validatesNumericalityOf[0]['allow_null'] = true;
+		BookNumericality::$validatesNumericalityOf[0]['allowNull'] = true;
 		$this->assertValid(array(null));
 	}
 
 	public function testOnlyInteger()
 	{
-		BookNumericality::$validatesNumericalityOf[0]['only_integer'] = true;
+		BookNumericality::$validatesNumericalityOf[0]['onlyInteger'] = true;
 
 		$this->assertValid(array(1, '1'));
 		$this->assertInvalid(array(1.5, '1.5'));
@@ -104,15 +104,15 @@ class ValidatesNumericalityOfTest extends DatabaseTest
 
 	public function testOnlyIntegerMatchingDoesNotIgnoreOtherOptions()
 	{
-		BookNumericality::$validatesNumericalityOf[0]['only_integer'] = true;
-		BookNumericality::$validatesNumericalityOf[0]['greater_than'] = 0;
+		BookNumericality::$validatesNumericalityOf[0]['onlyInteger'] = true;
+		BookNumericality::$validatesNumericalityOf[0]['greaterThan'] = 0;
 
 		$this->assertInvalid(array(-1,'-1'));
 	}
 
 	public function testGreaterThan()
 	{
-		BookNumericality::$validatesNumericalityOf[0]['greater_than'] = 5;
+		BookNumericality::$validatesNumericalityOf[0]['greaterThan'] = 5;
 
 		$this->assertValid(array(6, '7'));
 		$this->assertInvalid(array(5, '5'), 'must be greater than 5');
@@ -120,7 +120,7 @@ class ValidatesNumericalityOfTest extends DatabaseTest
 
 	public function testGreaterThanOrEqualTo()
 	{
-		BookNumericality::$validatesNumericalityOf[0]['greater_than_or_equal_to'] = 5;
+		BookNumericality::$validatesNumericalityOf[0]['greaterThanOrEqualTo'] = 5;
 
 		$this->assertValid(array(5, 5.1, '5.1'));
 		$this->assertInvalid(array(-50, 4.9, '4.9','-5.1'));
@@ -128,7 +128,7 @@ class ValidatesNumericalityOfTest extends DatabaseTest
 
 	public function testLessThan()
 	{
-		BookNumericality::$validatesNumericalityOf[0]['less_than'] = 5;
+		BookNumericality::$validatesNumericalityOf[0]['lessThan'] = 5;
 
 		$this->assertValid(array(4.9, -1, 0, '-5'));
 		$this->assertInvalid(array(5, '5'), 'must be less than 5');
@@ -136,7 +136,7 @@ class ValidatesNumericalityOfTest extends DatabaseTest
 
 	public function testLessThanOrEqualTo()
 	{
-		BookNumericality::$validatesNumericalityOf[0]['less_than_or_equal_to'] = 5;
+		BookNumericality::$validatesNumericalityOf[0]['lessThanOrEqualTo'] = 5;
 
 		$this->assertValid(array(5, -1, 0, 4.9, '-5'));
 		$this->assertInvalid(array('8', 5.1), 'must be less than or equal to 5');
@@ -144,7 +144,7 @@ class ValidatesNumericalityOfTest extends DatabaseTest
 
 	public function testGreaterThanLessThanAndEven()
 	{
-		BookNumericality::$validatesNumericalityOf[0] = array('numeric_test', 'greater_than' => 1, 'less_than' => 4, 'even' => true);
+		BookNumericality::$validatesNumericalityOf[0] = array('numeric_test', 'greaterThan' => 1, 'lessThan' => 4, 'even' => true);
 
 		$this->assertValid(array(2));
 		$this->assertInvalid(array(1,3,4));

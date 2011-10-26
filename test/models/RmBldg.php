@@ -26,8 +26,8 @@ class RmBldg extends ActiveRecord\Model
 	);
 
 	static $validatesNumericalityOf = array(
-		array('space_out', 'less_than' => 9, 'greater_than' => '5'),
-		array('rm_id', 'less_than' => 10, 'odd' => null)
+		array('space_out', 'lessThan' => 9, 'greaterThan' => '5'),
+		array('rm_id', 'lessThan' => 10, 'odd' => null)
 	);
 }
 ?>

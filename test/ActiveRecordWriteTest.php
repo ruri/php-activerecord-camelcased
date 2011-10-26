@@ -66,8 +66,6 @@ class ActiveRecordWriteTest extends DatabaseTest
 	{
 		$author = new Author(array('name' => 'Blah Blah'));
 		$author->save();
-		var_dump($author->connection()->lastQuery);
-		var_dump($author->connection()->quoteName('updated_at'));
 		$this->assertTrue(strpos($author->connection()->lastQuery,$author->connection()->quoteName('updated_at')) !== false);
 	}
 

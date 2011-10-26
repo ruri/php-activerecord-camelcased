@@ -281,7 +281,7 @@ class Validations
 	 * <code>
 	 * class Person extends ActiveRecord\Model {
 	 *   static $validatesNumericalityOf = array(
-	 *     array('salary', 'greater_than' => 19.99, 'less_than' => 99.99)
+	 *     array('salary', 'greaterThan' => 19.99, 'lessThan' => 99.99)
 	 *   );
 	 * }
 	 * </code>
@@ -309,7 +309,7 @@ class Validations
 
 		// Notice that for fixnum and float columns empty strings are converted to nil.
 		// Validates whether the value of the specified attribute is numeric by trying to convert it to a float with Kernel.Float
-		// (if only_integer is false) or applying it to the regular expression /\A[+\-]?\d+\Z/ (if only_integer is set to true).
+		// (if onlyInteger is false) or applying it to the regular expression /\A[+\-]?\d+\Z/ (if onlyInteger is set to true).
 		foreach ($attrs as $attr)
 		{
 			$options = array_merge($configuration, $attr);
@@ -494,7 +494,7 @@ class Validations
 				$range = $options[$rangeOptions[0]];
 
 				if (!(Utils::isA('range', $range)))
-					throw new  ValidationsArgumentError("$rangeOption must be an array composing a range of numbers with key [0] being less than key [1]");
+					throw new  ValidationsArgumentError("Range must be an array composing a range of numbers with key [0] being less than key [1]");
 				$rangeOptions = array('minimum', 'maximum');
 				$attr['minimum'] = $range[0];
 				$attr['maximum'] = $range[1];

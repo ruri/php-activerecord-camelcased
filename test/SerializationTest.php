@@ -35,7 +35,7 @@ class SerializationTest extends DatabaseTest
 	public function testOnlyShouldOnlyApplyToAttributes()
 	{
 		$this->assertHasKeys('name','author', $this->_a(array('only' => 'name', 'include' => 'author')));
-		$this->assertHasKeys('book_id','upper_name', $this->_a(array('only' => 'book_id', 'methods' => 'upper_name')));
+		$this->assertHasKeys('book_id','upperName', $this->_a(array('only' => 'book_id', 'methods' => 'upperName')));
 	}
 
 	public function testOnlyOverridesExcept()
@@ -158,13 +158,13 @@ class SerializationTest extends DatabaseTest
 
 	public function testToXmlSkipInstruct()
 	{
-		$this->assertSame(false,strpos(Book::find(1)->toXml(array('skip_instruct' => true)),'<?xml version'));
-		$this->assertSame(0,    strpos(Book::find(1)->toXml(array('skip_instruct' => false)),'<?xml version'));
+		$this->assertSame(false,strpos(Book::find(1)->toXml(array('skipInstruct' => true)),'<?xml version'));
+		$this->assertSame(0,    strpos(Book::find(1)->toXml(array('skipInstruct' => false)),'<?xml version'));
 	}
 
 	public function testOnlyMethod()
 	{
-		$this->assertContains('<sharks>lasers</sharks>', Author::first()->toXml(array('only_method' => 'return_something')));
+		$this->assertContains('<sharks>lasers</sharks>', Author::first()->toXml(array('onlyMethod' => 'returnSomething')));
 	}
 
   public function testToCsv()
@@ -177,7 +177,7 @@ class SerializationTest extends DatabaseTest
   {
     $book = Book::find(1);
     $this->assertEquals('book_id,author_id,secondary_author_id,name,numeric_test,special',
-                         $book->toCsv(array('only_header'=>true))
+                         $book->toCsv(array('onlyHeader'=>true))
                          );
   }
 
@@ -194,7 +194,7 @@ class SerializationTest extends DatabaseTest
     $book = Book::find(1);
     $this->assertEquals('secondary_author_id,name',
                          $book->toCsv(array('only'=>array('secondary_author_id','name'),
-                                             'only_header'=>true))
+                                             'onlyHeader'=>true))
                          );
   }
 

@@ -146,7 +146,7 @@ class CallBack
 	 * Invokes a callback.
 	 *
 	 * @internal This is the only piece of the CallBack class that carries its own logic for the
-	 * model object. For (after|before)_(create|update) callbacks, it will merge with
+	 * model object. For (after|before)(Create|Update) callbacks, it will merge with
 	 * a generic 'save' callback which is called first for the lease amount of precision.
 	 *
 	 * @param string $model Model to invoke the callback on.
@@ -161,7 +161,7 @@ class CallBack
 		if ($mustExist && !array_key_exists($name, $this->registry))
 			throw new ActiveRecordException("No callbacks were defined for: $name on " . get_class($model));
 
-		// if it doesn't exist it might be a /(after|before)_(create|update)/ so we still need to run the save
+		// if it doesn't exist it might be a /(after|before)(Create|Update)/ so we still need to run the save
 		// callback
 		if (!array_key_exists($name, $this->registry))
 			$registry = array();
@@ -169,12 +169,15 @@ class CallBack
 			$registry = $this->registry[$name];
 		
 		// TODO: Fix the code below.
-		$first = substr($name,0,6);
+		$first1 = substr($name, 0, 5);
+		$first2 = substr($name, 0, 6);
+		$second1 = substr($name, 5);
+		$second2 = substr($name, 6);
 
-		// starts with /(after|before)_(create|update)/
-		if (($first == 'after_' || $first == 'before') && (($second = substr($name,7,5)) == 'creat' || $second == 'updat' || $second == 'reate' || $second == 'pdate'))
+		// starts with /(after|before)(Create|Update)/
+		if (($first1 === 'after' || $first2 === 'before') && ($second1 === 'Create' || $second2 === 'Create' || $second1 === 'Update' || $second2 === 'Update'))
 		{
-			$temporalSave = str_replace(array('create', 'update'), 'save', $name);
+			$temporalSave = str_replace(array('Create', 'Update'), 'Save', $name);
 
 			if (!isset($this->registry[$temporalSave]))
 				$this->registry[$temporalSave] = array();
@@ -188,7 +191,7 @@ class CallBack
 			{
 				$ret = ($method instanceof Closure ? $method($model) : $model->$method());
 
-				if (false === $ret && $first === 'before')
+				if (false === $ret && $first2 === 'before')
 					return false;
 			}
 		}

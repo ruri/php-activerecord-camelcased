@@ -50,7 +50,7 @@ class ValidatesFormatOfTest extends DatabaseTest
 
 	public function testValidBlankAndallowBlank()
 	{
-		BookFormat::$validatesFormatOf[0]['allow_blank'] = true;
+		BookFormat::$validatesFormatOf[0]['allowBlank'] = true;
 		BookFormat::$validatesFormatOf[0]['with'] = '/[^0-9]/';
 		$book = new BookFormat(array('author_id' => 1, 'name' => ''));
 		$book->save();
@@ -59,7 +59,7 @@ class ValidatesFormatOfTest extends DatabaseTest
 
 	public function testValidNullAndAllowNull()
 	{
-		BookFormat::$validatesFormatOf[0]['allow_null'] = true;
+		BookFormat::$validatesFormatOf[0]['allowNull'] = true;
 		BookFormat::$validatesFormatOf[0]['with'] = '/[^0-9]/';
 		$book = new BookFormat();
 		$book->author_id = 1;

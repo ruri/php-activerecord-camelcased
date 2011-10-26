@@ -18,7 +18,7 @@ class ValidatesLengthOfTest extends DatabaseTest
 	public function setUp($connectionName=null)
 	{
 		parent::setUp($connectionName);
-		BookLength::$validatesLengthOf[0] = array('name', 'allow_blank' => false, 'allow_null' => false);
+		BookLength::$validatesLengthOf[0] = array('name', 'allowBlank' => false, 'allowNull' => false);
 	}
 	
 	public function testWithin()
@@ -96,7 +96,7 @@ class ValidatesLengthOfTest extends DatabaseTest
 	public function testValidNull()
 	{
 		BookLength::$validatesLengthOf[0]['within'] = array(1, 3);
-		BookLength::$validatesLengthOf[0]['allow_null'] = true;
+		BookLength::$validatesLengthOf[0]['allowNull'] = true;
 
 		$book = new BookLength;
 		$book->name = null;
@@ -107,7 +107,7 @@ class ValidatesLengthOfTest extends DatabaseTest
 	public function testValidBlank()
 	{
 		BookLength::$validatesLengthOf[0]['within'] = array(1, 3);
-		BookLength::$validatesLengthOf[0]['allow_blank'] = true;
+		BookLength::$validatesLengthOf[0]['allowBlank'] = true;
 
 		$book = new BookLength;
 		$book->name = '';

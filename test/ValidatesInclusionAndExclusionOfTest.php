@@ -122,7 +122,7 @@ class ValidatesInclusionAndExclusionOfTest extends DatabaseTest
 
 	public function testValidNull()
 	{
-		BookInclusion::$validatesInclusionOf[0]['allow_null'] = true;
+		BookInclusion::$validatesInclusionOf[0]['allowNull'] = true;
 		$book = new BookInclusion;
 		$book->name = null;
 		$book->save();
@@ -131,7 +131,7 @@ class ValidatesInclusionAndExclusionOfTest extends DatabaseTest
 
 	public function testValidBlank()
 	{
-		BookInclusion::$validatesInclusionOf[0]['allow_blank'] = true;
+		BookInclusion::$validatesInclusionOf[0]['allowBlank'] = true;
 		$book = new BookInclusion;
 		$book->name = '';
 		$book->save();

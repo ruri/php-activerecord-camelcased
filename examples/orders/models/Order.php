@@ -16,8 +16,8 @@ class Order extends ActiveRecord\Model
 
 	// order must have a price and tax > 0
 	static $validatesNumericalityOf = array(
-		array('price', 'greater_than' => 0),
-		array('tax',   'greater_than' => 0));
+		array('price', 'greaterThan' => 0),
+		array('tax',   'greaterThan' => 0));
 
 	// setup a callback to automatically apply a tax
 	static $beforeValidationOnCreate = array('apply_tax');

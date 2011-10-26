@@ -48,8 +48,8 @@ namespace ActiveRecord;
  *   );
  *
  *   static $validatesNumericalityOf = array(
- *     array('cost', 'greater_than' => 0),
- *     array('total', 'greater_than' => 0)
+ *     array('cost', 'greaterThan' => 0),
+ *     array('total', 'greaterThan' => 0)
  *   );
  *
  *   static $beforeSave = array('calculate_total_with_tax');
@@ -604,10 +604,10 @@ class Model
 	 * <code>
 	 * array(
 	 *   'name' => array(
-	 *     array('validator' => 'validates_presence_of'),
-	 *     array('validator' => 'validates_inclusion_of', 'in' => array('Bob','Joe','John')),
+	 *     array('validator' => 'validatesPresenceOf'),
+	 *     array('validator' => 'validatesInclusionOf', 'in' => array('Bob','Joe','John')),
 	 *   'password' => array(
-	 *     array('validator' => 'validates_length_of', 'minimum' => 6))
+	 *     array('validator' => 'validatesLengthOf', 'minimum' => 6))
 	 *   )
 	 * );
 	 * </code>
@@ -1745,7 +1745,7 @@ class Model
    * YourModel::find('first')->toCsv(array('only'=>array('name','level')));
    * returns: Joe,2
    *
-   * YourModel::find('first')->toCsv(array('only_header'=>true,'only'=>array('name','level')));
+   * YourModel::find('first')->toCsv(array('onlyHeader'=>true,'only'=>array('name','level')));
    * returns: name,level
    * </code>
    *

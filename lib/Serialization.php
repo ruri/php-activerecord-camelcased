@@ -16,8 +16,8 @@ use XmlWriter;
  * <li><b>methods:</b> a string or array of methods to invoke. The method's name will be used as a key for the final attributes array
  * along with the method's returned value</li>
  * <li><b>include:</b> a string or array of associated models to include in the final serialized product.</li>
- * <li><b>only_method:</b> a method that's called and only the resulting array is serialized
- * <li><b>skip_instruct:</b> set to true to skip the <?xml ...?> declaration.</li>
+ * <li><b>onlyMethod:</b> a method that's called and only the resulting array is serialized
+ * <li><b>skipInstruct:</b> set to true to skip the <?xml ...?> declaration.</li>
  * </ul>
  *
  * Example usage:
@@ -28,8 +28,8 @@ use XmlWriter;
  * # include the comments association
  * # include posts association with its own options (nested)
  * $model->toJson(array(
- *   'only' => array('id','name', 'encoded_description'),
- *   'methods' => array('encoded_description'),
+ *   'only' => array('id','name', 'encodedDescription'),
+ *   'methods' => array('encodedDescription'),
  *   'include' => array('comments', 'posts' => array('only' => 'id'))
  * ));
  *
@@ -146,9 +146,9 @@ abstract class Serialization
 	
 	private function checkOnlyMethod()
 	{
-		if (isset($this->options['only_method']))
+		if (isset($this->options['onlyMethod']))
 		{
-			$method = $this->options['only_method'];
+			$method = $this->options['onlyMethod'];
 			if (method_exists($this->model, $method))
 				$this->attributes = $this->model->$method();
 		}
@@ -301,7 +301,7 @@ class XmlSerializer extends Serialization
 		$this->writer->endDocument();
 		$xml = $this->writer->outputMemory(true);
 
-		if (@$this->options['skip_instruct'] == true)
+		if (@$this->options['skipInstruct'] == true)
 			$xml = preg_replace('/<\?xml version.*?\?>/','',$xml);
 
 		return $xml;
@@ -345,7 +345,7 @@ class CsvSerializer extends Serialization
 
   public function toS()
   {
-    if (@$this->options['only_header'] == true) return $this->header();
+    if (@$this->options['onlyHeader'] == true) return $this->header();
     return $this->row();
   }
 
