@@ -102,6 +102,4 @@ class SqliteAdapter extends Connection
 			'boolean' => array('name' => 'boolean')
 		);
 	}
-
 }
-?>

@@ -125,6 +125,4 @@ SQL;
 			'boolean' => array('name' => 'boolean')
 		);
 	}
-
 }
-?>

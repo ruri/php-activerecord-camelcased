@@ -662,5 +662,4 @@ class BelongsTo extends AbstractRelationship
 	{
 		$this->queryAndAttachRelatedModelsEagerly($table,$models,$attributes,$includes, $this->primaryKey,$this->foreignKey);
 	}
-};
-?>
+}

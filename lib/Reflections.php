@@ -83,4 +83,3 @@ class Reflections extends Singleton
 		return $this->getCalledClass();
 	}
 }
-?>

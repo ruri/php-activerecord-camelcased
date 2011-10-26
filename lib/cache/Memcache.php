@@ -42,4 +42,3 @@ class Memcache
 		$this->memcache->set($key,$value,null,$expire);
 	}
 }
-?>

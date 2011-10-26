@@ -516,8 +516,4 @@ abstract class Connection
 	{
 		return false;
 	}
-
 }
-
-;
-?>

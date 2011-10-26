@@ -94,6 +94,4 @@ class MysqlAdapter extends Connection
 			'boolean' => array('name' => 'tinyint', 'length' => 1)
 		);
 	}
-
 }
-?>
