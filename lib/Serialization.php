@@ -24,17 +24,17 @@ use XmlWriter;
  *
  * <code>
  * # include the attributes id and name
- * # run $model->encoded_description() and include its return value
+ * # run $model->encodedDescription() and include its return value
  * # include the comments association
  * # include posts association with its own options (nested)
- * $model->to_json(array(
+ * $model->toJson(array(
  *   'only' => array('id','name', 'encoded_description'),
  *   'methods' => array('encoded_description'),
  *   'include' => array('comments', 'posts' => array('only' => 'id'))
  * ));
  *
  * # except the password field from being included
- * $model->to_xml(array('except' => 'password')));
+ * $model->toXml(array('except' => 'password')));
  * </code>
  *
  * @package ActiveRecord
@@ -84,7 +84,7 @@ abstract class Serialization
 	 *
 	 * @var boolean
 	 */
-	protected $includes_with_class_name_element = false;
+	protected $includesWithClassNameElement = false;
 
 	/**
 	 * Constructs a {@link Serialization} object.
@@ -98,43 +98,43 @@ abstract class Serialization
 		$this->model = $model;
 		$this->options = $options;
 		$this->attributes = $model->attributes();
-		$this->parse_options();
+		$this->parseOptions();
 	}
 
-	private function parse_options()
+	private function parseOptions()
 	{
-		$this->check_only();
-		$this->check_except();
-		$this->check_methods();
-		$this->check_include();
-		$this->check_only_method();        
+		$this->checkOnly();
+		$this->checkExcept();
+		$this->checkMethods();
+		$this->checkInclude();
+		$this->checkOnlyMethod();        
 	}
 
-	private function check_only()
+	private function checkOnly()
 	{
 		if (isset($this->options['only']))
 		{
-			$this->options_to_a('only');
+			$this->optionsToA('only');
 
 			$exclude = array_diff(array_keys($this->attributes),$this->options['only']);
 			$this->attributes = array_diff_key($this->attributes,array_flip($exclude));
 		}
 	}
 
-	private function check_except()
+	private function checkExcept()
 	{
 		if (isset($this->options['except']) && !isset($this->options['only']))
 		{
-			$this->options_to_a('except');
+			$this->optionsToA('except');
 			$this->attributes = array_diff_key($this->attributes,array_flip($this->options['except']));
 		}
 	}
 
-	private function check_methods()
+	private function checkMethods()
 	{
 		if (isset($this->options['methods']))
 		{
-			$this->options_to_a('methods');
+			$this->optionsToA('methods');
 
 			foreach ($this->options['methods'] as $method)
 			{
@@ -144,7 +144,7 @@ abstract class Serialization
 		}
 	}
 	
-	private function check_only_method()
+	private function checkOnlyMethod()
 	{
 		if (isset($this->options['only_method']))
 		{
@@ -154,13 +154,13 @@ abstract class Serialization
 		}
 	}
 
-	private function check_include()
+	private function checkInclude()
 	{
 		if (isset($this->options['include']))
 		{
-			$this->options_to_a('include');
+			$this->optionsToA('include');
 
-			$serializer_class = get_class($this);
+			$serializerClass = get_class($this);
 
 			foreach ($this->options['include'] as $association => $options)
 			{
@@ -175,8 +175,8 @@ abstract class Serialization
 
 					if (!is_array($assoc))
 					{
-						$serialized = new $serializer_class($assoc, $options);
-						$this->attributes[$association] = $serialized->to_a();;
+						$serialized = new $serializerClass($assoc, $options);
+						$this->attributes[$association] = $serialized->toA();;
 					}
 					else
 					{
@@ -184,12 +184,12 @@ abstract class Serialization
 
 						foreach ($assoc as $a)
 						{
-							$serialized = new $serializer_class($a, $options);
+							$serialized = new $serializerClass($a, $options);
 
-							if ($this->includes_with_class_name_element)
-								$includes[strtolower(get_class($a))][] = $serialized->to_a();
+							if ($this->includesWithClassNameElement)
+								$includes[strtolower(get_class($a))][] = $serialized->toA();
 							else
-								$includes[] = $serialized->to_a();
+								$includes[] = $serialized->toA();
 						}
 
 						$this->attributes[$association] = $includes;
@@ -202,7 +202,7 @@ abstract class Serialization
 		}
 	}
 
-	final protected function options_to_a($key)
+	final protected function optionsToA($key)
 	{
 		if (!is_array($this->options[$key]))
 			$this->options[$key] = array($this->options[$key]);
@@ -212,7 +212,7 @@ abstract class Serialization
 	 * Returns the attributes array.
 	 * @return array
 	 */
-	final public function to_a()
+	final public function toA()
 	{
 		foreach ($this->attributes as &$value)
 		{
@@ -229,14 +229,14 @@ abstract class Serialization
 	 */
 	final public function __toString()
 	{
-		return $this->to_s();
+		return $this->toS();
 	}
 
 	/**
 	 * Performs the serialization.
 	 * @return string
 	 */
-	abstract public function to_s();
+	abstract public function toS();
 };
 
 /**
@@ -246,11 +246,11 @@ abstract class Serialization
  */
 class ArraySerializer extends Serialization
 {
-	public static $include_root = false;
+	public static $includeRoot = false;
 
-	public function to_s()
+	public function toS()
 	{
-		return self::$include_root ? array(strtolower(get_class($this->model)) => $this->to_a()) : $this->to_a();
+		return self::$includeRoot ? array(strtolower(get_class($this->model)) => $this->toA()) : $this->toA();
 	}
 }
 
@@ -261,12 +261,12 @@ class ArraySerializer extends Serialization
  */
 class JsonSerializer extends ArraySerializer
 {
-	public static $include_root = false;
+	public static $includeRoot = false;
 
-	public function to_s()
+	public function toS()
 	{
-		parent::$include_root = self::$include_root;
-		return json_encode(parent::to_s());
+		parent::$includeRoot = self::$includeRoot;
+		return json_encode(parent::toS());
 	}
 }
 
@@ -281,22 +281,22 @@ class XmlSerializer extends Serialization
 
 	public function __construct(Model $model, &$options)
 	{
-		$this->includes_with_class_name_element = true;
+		$this->includesWithClassNameElement = true;
 		parent::__construct($model,$options);
 	}
 
-	public function to_s()
+	public function toS()
 	{
-		return $this->xml_encode();
+		return $this->xmlEncode();
 	}
 
-	private function xml_encode()
+	private function xmlEncode()
 	{
 		$this->writer = new XmlWriter();
 		$this->writer->openMemory();
 		$this->writer->startDocument('1.0', 'UTF-8');
 		$this->writer->startElement(strtolower(denamespace(($this->model))));
-		$this->write($this->to_a());
+		$this->write($this->toA());
 		$this->writer->endElement();
 		$this->writer->endDocument();
 		$xml = $this->writer->outputMemory(true);
@@ -343,7 +343,7 @@ class CsvSerializer extends Serialization
   public static $delimiter = ',';
   public static $enclosure = '"';
 
-  public function to_s()
+  public function toS()
   {
     if (@$this->options['only_header'] == true) return $this->header();
     return $this->row();
@@ -351,15 +351,15 @@ class CsvSerializer extends Serialization
 
   private function header()
   {
-    return $this->to_csv(array_keys($this->to_a()));
+    return $this->toCsv(array_keys($this->toA()));
   }
 
   private function row()
   {
-    return $this->to_csv($this->to_a());
+    return $this->toCsv($this->toA());
   }
 
-  private function to_csv($arr)
+  private function toCsv($arr)
   {
     $outstream = fopen('php://temp', 'w');
     fputcsv($outstream, $arr, self::$delimiter, self::$enclosure);

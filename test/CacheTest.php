@@ -5,7 +5,7 @@ use ActiveRecord\Cache;
 
 class CacheTest extends SnakeCase_PHPUnit_Framework_TestCase
 {
-	public function set_up()
+	public function setUp()
 	{
 		if (!extension_loaded('memcache'))
 		{
@@ -16,69 +16,69 @@ class CacheTest extends SnakeCase_PHPUnit_Framework_TestCase
 		Cache::initialize('memcache://localhost');
 	}
 
-	public function tear_down()
+	public function tearDown()
 	{
 		Cache::flush();
 	}
 
-	private function cache_get()
+	private function cacheGet()
 	{
 		return Cache::get("1337", function() { return "abcd"; });
 	}
 
-	public function test_initialize()
+	public function testInitialize()
 	{
-		$this->assert_not_null(Cache::$adapter);
+		$this->assertNotNull(Cache::$adapter);
 	}
 
-	public function test_initialize_with_null()
+	public function testInitializeWithNull()
 	{
 		Cache::initialize(null);
-		$this->assert_null(Cache::$adapter);
+		$this->assertNull(Cache::$adapter);
 	}
 
-	public function test_get_returns_the_value()
+	public function testGetReturnsTheValue()
 	{
-		$this->assert_equals("abcd", $this->cache_get());
+		$this->assertEquals("abcd", $this->cacheGet());
 	}
 
-	public function test_get_writes_to_the_cache()
+	public function testGetWritesToTheCache()
 	{
-		$this->cache_get();
-		$this->assert_equals("abcd", Cache::$adapter->read("1337"));
+		$this->cacheGet();
+		$this->assertEquals("abcd", Cache::$adapter->read("1337"));
 	}
 
-	public function test_get_does_not_execute_closure_on_cache_hit()
+	public function testGetDoesNotExecuteClosureOnCacheHit()
 	{
-		$this->cache_get();
+		$this->cacheGet();
 		Cache::get("1337", function() { throw new Exception("I better not execute!"); });
 	}
 
-	public function test_cache_adapter_returns_false_on_cache_miss()
+	public function testCacheAdapterReturnsFalseOnCacheMiss()
 	{
-		$this->assert_same(false, Cache::$adapter->read("some-key"));
+		$this->assertSame(false, Cache::$adapter->read("some-key"));
 	}
 
-	public function test_get_works_without_caching_enabled()
+	public function testGetWorksWithoutCachingEnabled()
 	{
 		Cache::$adapter = null;
-		$this->assert_equals("abcd", $this->cache_get());
+		$this->assertEquals("abcd", $this->cacheGet());
 	}
 
-	public function test_cache_expire()
+	public function testCacheExpire()
 	{
 		Cache::$options['expire'] = 1;
-		$this->cache_get();
+		$this->cacheGet();
 		sleep(2);
 
-		$this->assert_same(false, Cache::$adapter->read("1337"));
+		$this->assertSame(false, Cache::$adapter->read("1337"));
 	}
 	
-	public function test_namespace_is_set_properly()
+	public function testNamespaceIsSetProperly()
 	{
 	  Cache::$options['namespace'] = 'myapp';
-	  $this->cache_get();
-	  $this->assert_same("abcd", Cache::$adapter->read("myapp::1337"));
+	  $this->cacheGet();
+	  $this->assertSame("abcd", Cache::$adapter->read("myapp::1337"));
 	}
 }
 ?>

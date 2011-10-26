@@ -28,24 +28,24 @@ class SqliteAdapter extends Connection
 		return "$sql LIMIT {$offset}$limit";
 	}
 
-	public function query_column_info($table)
+	public function queryColumnInfo($table)
 	{
 		return $this->query("pragma table_info($table)");
 	}
 
-	public function query_for_tables()
+	public function queryForTables()
 	{
 		return $this->query("SELECT name FROM sqlite_master");
 	}
 
-	public function create_column($column)
+	public function createColumn($column)
 	{
 		$c = new Column();
-		$c->inflected_name	= Inflector::instance()->variablize($column['name']);
+		$c->inflectedName	= Inflector::instance()->variablize($column['name']);
 		$c->name			= $column['name'];
 		$c->nullable		= $column['notnull'] ? false : true;
 		$c->pk				= $column['pk'] ? true : false;
-		$c->auto_increment	= $column['type'] == 'INTEGER' && $c->pk;
+		$c->autoIncrement	= $column['type'] == 'INTEGER' && $c->pk;
 
 		$column['type'] = preg_replace('/ +/',' ',$column['type']);
 		$column['type'] = str_replace(array('(',')'),' ',$column['type']);
@@ -54,13 +54,13 @@ class SqliteAdapter extends Connection
 
 		if (!empty($matches))
 		{
-			$c->raw_type = strtolower($matches[0]);
+			$c->rawType = strtolower($matches[0]);
 
 			if (count($matches) > 1)
 				$c->length = intval($matches[1]);
 		}
 
-		$c->map_raw_type();
+		$c->mapRawType();
 
 		if ($c->type == Column::DATETIME)
 			$c->length = 19;
@@ -78,14 +78,14 @@ class SqliteAdapter extends Connection
 		return $c;
 	}
 
-	public function set_encoding($charset)
+	public function setEncoding($charset)
 	{
-		throw new ActiveRecordException("SqliteAdapter::set_charset not supported.");
+		throw new ActiveRecordException("SqliteAdapter::setCharset not supported.");
 	}
 
-	public function accepts_limit_and_order_for_update_and_delete() { return true; }
+	public function acceptsLimitAndOrderForUpdateAndDelete() { return true; }
 
-	public function native_database_types()
+	public function nativeDatabaseTypes()
 	{
 		return array(
 			'primary_key' => 'INTEGER NOT NULL PRIMARY KEY',

@@ -28,12 +28,12 @@ abstract class Singleton
 	 */
 	final public static function instance()
 	{
-		$class_name = get_called_class();
+		$className = get_called_class();
 
-		if (!isset(self::$instances[$class_name]))
-			self::$instances[$class_name] = new $class_name;
+		if (!isset(self::$instances[$className]))
+			self::$instances[$className] = new $className;
 
-		return self::$instances[$class_name];
+		return self::$instances[$className];
 	}
 
 	/**
@@ -48,7 +48,7 @@ abstract class Singleton
 	 *
 	 * @return string
 	 */
-	final protected function get_called_class()
+	final protected function getCalledClass()
 	{
 		$backtrace = debug_backtrace();
     	return get_class($backtrace[2]['object']);

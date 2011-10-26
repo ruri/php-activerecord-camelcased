@@ -11,85 +11,85 @@ class TestLogger
 
 class ConfigTest extends SnakeCase_PHPUnit_Framework_TestCase
 {
-	public function set_up()
+	public function setUp()
 	{
 		$this->config = new Config();
 		$this->connections = array('development' => 'mysql://blah/development', 'test' => 'mysql://blah/test');
-		$this->config->set_connections($this->connections);
+		$this->config->setConnections($this->connections);
 	}
 
 	/**
 	 * @expectedException ActiveRecord\ConfigException
 	 */
-	public function test_set_connections_must_be_array()
+	public function testSetConnectionsMustBeArray()
 	{
-		$this->config->set_connections(null);
+		$this->config->setConnections(null);
 	}
 
-	public function test_get_connections()
+	public function testGetConnections()
 	{
-		$this->assert_equals($this->connections,$this->config->get_connections());
+		$this->assertEquals($this->connections,$this->config->getConnections());
 	}
 
-	public function test_get_connection()
+	public function testGetConnection()
 	{
-		$this->assert_equals($this->connections['development'],$this->config->get_connection('development'));
+		$this->assertEquals($this->connections['development'],$this->config->getConnection('development'));
 	}
 
-	public function test_get_invalid_connection()
+	public function testGetInvalidConnection()
 	{
-		$this->assert_null($this->config->get_connection('whiskey tango foxtrot'));
+		$this->assertNull($this->config->getConnection('whiskey tango foxtrot'));
 	}
 
-	public function test_get_default_connection_and_connection()
+	public function testGetDefaultConnectionAndConnection()
 	{
-		$this->config->set_default_connection('development');
-		$this->assert_equals('development',$this->config->get_default_connection());
-		$this->assert_equals($this->connections['development'],$this->config->get_default_connection_string());
+		$this->config->setDefaultConnection('development');
+		$this->assertEquals('development',$this->config->getDefaultConnection());
+		$this->assertEquals($this->connections['development'],$this->config->getDefaultConnectionString());
 	}
 
-	public function test_get_default_connection_and_connection_string_defaults_to_development()
+	public function testGetDefaultConnectionAndConnectionStringDefaultsToDevelopment()
 	{
-		$this->assert_equals('development',$this->config->get_default_connection());
-		$this->assert_equals($this->connections['development'],$this->config->get_default_connection_string());
+		$this->assertEquals('development',$this->config->getDefaultConnection());
+		$this->assertEquals($this->connections['development'],$this->config->getDefaultConnectionString());
 	}
 
-	public function test_get_default_connection_string_when_connection_name_is_not_valid()
+	public function testGetDefaultConnectionStringWhenConnectionNameIsNotValid()
 	{
-		$this->config->set_default_connection('little mac');
-		$this->assert_null($this->config->get_default_connection_string());
+		$this->config->setDefaultConnection('little mac');
+		$this->assertNull($this->config->getDefaultConnectionString());
 	}
 
-	public function test_default_connection_is_set_when_only_one_connection_is_present()
+	public function testDefaultConnectionIsSetWhenOnlyOneConnectionIsPresent()
 	{
-		$this->config->set_connections(array('development' => $this->connections['development']));
-		$this->assert_equals('development',$this->config->get_default_connection());
+		$this->config->setConnections(array('development' => $this->connections['development']));
+		$this->assertEquals('development',$this->config->getDefaultConnection());
 	}
 
-	public function test_set_connections_with_default()
+	public function testSetConnectionsWithDefault()
 	{
-		$this->config->set_connections($this->connections,'test');
-		$this->assert_equals('test',$this->config->get_default_connection());
+		$this->config->setConnections($this->connections,'test');
+		$this->assertEquals('test',$this->config->getDefaultConnection());
 	}
 
-	public function test_initialize_closure()
+	public function testInitializeClosure()
 	{
 		$test = $this;
 
 		Config::initialize(function($cfg) use ($test)
 		{
-			$test->assert_not_null($cfg);
-			$test->assert_equals('ActiveRecord\Config',get_class($cfg));
+			$test->assertNotNull($cfg);
+			$test->assertEquals('ActiveRecord\Config',get_class($cfg));
 		});
 	}
 
-	public function test_logger_object_must_implement_log_method()
+	public function testLoggerObjectMustImplementLogMethod()
 	{
 		try {
-			$this->config->set_logger(new TestLogger);
+			$this->config->setLogger(new TestLogger);
 			$this->fail();
 		} catch (ConfigException $e) {
-			$this->assert_equals($e->getMessage(), "Logger object must implement a public log method");
+			$this->assertEquals($e->getMessage(), "Logger object must implement a public log method");
 		}
 	}
 }

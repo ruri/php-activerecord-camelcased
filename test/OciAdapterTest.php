@@ -4,44 +4,44 @@ require_once __DIR__ . '/../lib/adapters/OciAdapter.php';
 
 class OciAdapterTest extends AdapterTest
 {
-	public function set_up($connection_name=null)
+	public function setUp($connectionName=null)
 	{
-		parent::set_up('oci');
+		parent::setUp('oci');
 	}
 
-	public function test_get_sequence_name()
+	public function testGetSequenceName()
 	{
-		$this->assert_equals('authors_seq',$this->conn->get_sequence_name('authors','author_id'));
+		$this->assertEquals('authors_seq',$this->conn->getSequenceName('authors','author_id'));
 	}
 
-	public function test_columns_text()
+	public function testColumnsText()
 	{
-		$author_columns = $this->conn->columns('authors');
-		$this->assert_equals('varchar2',$author_columns['some_text']->raw_type);
-		$this->assert_equals(100,$author_columns['some_text']->length);
+		$authorColumns = $this->conn->columns('authors');
+		$this->assertEquals('varchar2',$authorColumns['some_text']->rawType);
+		$this->assertEquals(100,$authorColumns['some_text']->length);
 	}
 
-	public function test_datetime_to_string()
+	public function testDatetimeToString()
 	{
-		$this->assert_equals('01-Jan-2009 01:01:01 AM',$this->conn->datetime_to_string(date_create('2009-01-01 01:01:01 EST')));
+		$this->assertEquals('01-Jan-2009 01:01:01 AM',$this->conn->datetimeToString(date_create('2009-01-01 01:01:01 EST')));
 	}
 
-	public function test_date_to_string()
+	public function testDateToString()
 	{
-		$this->assert_equals('01-Jan-2009',$this->conn->date_to_string(date_create('2009-01-01 01:01:01 EST')));
+		$this->assertEquals('01-Jan-2009',$this->conn->dateToString(date_create('2009-01-01 01:01:01 EST')));
 	}
 
-	public function test_insert_id() {}
-	public function test_insert_id_with_params() {}
-	public function test_insert_id_should_return_explicitly_inserted_id() {}
-	public function test_columns_time() {}
-	public function test_columns_sequence() {}
+	public function testInsertId() {}
+	public function testInsertIdWithParams() {}
+	public function testInsertIdShouldReturnExplicitlyInsertedId() {}
+	public function testColumnsTime() {}
+	public function testColumnsSequence() {}
 
-	public function test_set_charset()
+	public function testSetCharset()
 	{
-		$connection_string = ActiveRecord\Config::instance()->get_connection($this->connection_name);
-		$conn = ActiveRecord\Connection::instance($connection_string . '?charset=utf8');
-		$this->assert_equals(';charset=utf8', $conn->dsn_params);
+		$connectionString = ActiveRecord\Config::instance()->getConnection($this->connectionName);
+		$conn = ActiveRecord\Connection::instance($connectionString . '?charset=utf8');
+		$this->assertEquals(';charset=utf8', $conn->dsnParams);
 	}
 }
 ?>

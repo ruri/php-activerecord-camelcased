@@ -4,10 +4,10 @@ require_once __DIR__ . '/../../ActiveRecord.php';
 class Book extends ActiveRecord\Model
 {
 	// explicit table name since our table is not "books"
-	static $table_name = 'simple_book';
+	static $tableName = 'simple_book';
 
 	// explicit pk since our pk is not "id"
-	static $primary_key = 'book_id';
+	static $primaryKey = 'book_id';
 
 	// explicit connection name since we always want production with this model
 	static $connection = 'production';
@@ -24,8 +24,8 @@ $connections = array(
 // initialize ActiveRecord
 ActiveRecord\Config::initialize(function($cfg) use ($connections)
 {
-    $cfg->set_model_directory('.');
-    $cfg->set_connections($connections);
+    $cfg->setModelDirectory('.');
+    $cfg->setConnections($connections);
 });
 
 print_r(Book::first()->attributes());

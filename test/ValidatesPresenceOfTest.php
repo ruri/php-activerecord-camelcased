@@ -3,73 +3,73 @@ include 'helpers/config.php';
 
 class BookPresence extends ActiveRecord\Model
 {
-	static $table_name = 'books';
+	static $tableName = 'books';
 
-	static $validates_presence_of = array(
+	static $validatesPresenceOf = array(
 		array('name')
 	);
 }
 
 class AuthorPresence extends ActiveRecord\Model
 {
-	static $table_name = 'authors';
+	static $tableName = 'authors';
 
-	static $validates_presence_of = array(
+	static $validatesPresenceOf = array(
 		array('some_date')
 	);
 };
 
 class ValidatesPresenceOfTest extends DatabaseTest
 {
-	public function test_presence()
+	public function testPresence()
 	{
 		$book = new BookPresence(array('name' => 'blah'));
-		$this->assert_false($book->is_invalid());
+		$this->assertFalse($book->isInvalid());
 	}
 
-	public function test_presence_on_date_field_is_valid()
+	public function testPresenceOnDateFieldIsValid()
 	{
 		$author = new AuthorPresence(array('some_date' => '2010-01-01'));
-		$this->assert_true($author->is_valid());
+		$this->assertTrue($author->isValid());
 	}
 
-	public function test_presence_on_date_field_is_not_valid()
+	public function testPresenceOnDateFieldIsNotValid()
 	{
 		$author = new AuthorPresence();
-		$this->assert_false($author->is_valid());
+		$this->assertFalse($author->isValid());
 	}
 	
-	public function test_invalid_null()
+	public function testInvalidNull()
 	{
 		$book = new BookPresence(array('name' => null));
-		$this->assert_true($book->is_invalid());
+		$this->assertTrue($book->isInvalid());
 	}
 
-	public function test_invalid_blank()
+	public function testInvalidBlank()
 	{
 		$book = new BookPresence(array('name' => ''));
-		$this->assert_true($book->is_invalid());
+		$this->assertTrue($book->isInvalid());
 	}
 
-	public function test_valid_white_space()
+	public function testValidWhiteSpace()
 	{
 		$book = new BookPresence(array('name' => ' '));
-		$this->assert_false($book->is_invalid());
+		$this->assertFalse($book->isInvalid());
 	}
 
-	public function test_custom_message()
+	public function testCustomMessage()
 	{
-		BookPresence::$validates_presence_of[0]['message'] = 'is using a custom message.';
+		BookPresence::$validatesPresenceOf[0]['message'] = 'is using a custom message.';
 
 		$book = new BookPresence(array('name' => null));
-		$book->is_valid();
-		$this->assert_equals('is using a custom message.', $book->errors->on('name'));
+		$book->isValid();
+		$this->assertEquals('is using a custom message.', $book->errors->on('name'));
 	}
 
-	public function test_valid_zero()
+	public function testValidZero()
 	{
 		$book = new BookPresence(array('name' => 0));
-		$this->assert_true($book->is_valid());
+		$this->assertTrue($book->isValid());
 	}
 };
 ?>

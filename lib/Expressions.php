@@ -30,7 +30,7 @@ class Expressions
 		if (is_array($expressions))
 		{
 			$glue = func_num_args() > 2 ? func_get_arg(2) : ' AND ';
-			list($expressions,$values) = $this->build_sql_from_hash($expressions,$glue);
+			list($expressions,$values) = $this->buildSqlFromHash($expressions,$glue);
 		}
 
 		if ($expressions != '')
@@ -47,15 +47,15 @@ class Expressions
 	 * Bind a value to the specific one based index. There must be a bind marker
 	 * for each value bound or to_s() will throw an exception.
 	 */
-	public function bind($parameter_number, $value)
+	public function bind($parameterNumber, $value)
 	{
-		if ($parameter_number <= 0)
-			throw new ExpressionsException("Invalid parameter index: $parameter_number");
+		if ($parameterNumber <= 0)
+			throw new ExpressionsException("Invalid parameter index: $parameterNumber");
 
-		$this->values[$parameter_number-1] = $value;
+		$this->values[$parameterNumber-1] = $value;
 	}
 
-	public function bind_values($values)
+	public function bindValues($values)
 	{
 		$this->values = $values;
 	}
@@ -71,7 +71,7 @@ class Expressions
 	/**
 	 * Returns the connection object.
 	 */
-	public function get_connection()
+	public function getConnection()
 	{
 		return $this->connection;
 	}
@@ -82,12 +82,12 @@ class Expressions
 	 *
 	 * @param string $connection a Connection instance
 	 */
-	public function set_connection($connection)
+	public function setConnection($connection)
 	{
 		$this->connection = $connection;
 	}
 
-	public function to_s($substitute=false, &$options=null)
+	public function toS($substitute=false, &$options=null)
 	{
 		if (!$options) $options = array();
 		
@@ -95,7 +95,7 @@ class Expressions
 
 		$ret = "";
 		$replace = array();
-		$num_values = count($values);
+		$numValues = count($values);
 		$len = strlen($this->expressions);
 		$quotes = 0;
 
@@ -107,7 +107,7 @@ class Expressions
 			{
 				if ($quotes % 2 == 0)
 				{
-					if ($j > $num_values-1)
+					if ($j > $numValues-1)
 						throw new ExpressionsException("No bound parameter for index $j");
 
 					$ch = $this->substitute($values,$substitute,$i,$j++);
@@ -121,14 +121,14 @@ class Expressions
 		return $ret;
 	}
 
-	private function build_sql_from_hash(&$hash, $glue)
+	private function buildSqlFromHash(&$hash, $glue)
 	{
 		$sql = $g = "";
 
 		foreach ($hash as $name => $value)
 		{
 			if ($this->connection)
-				$name = $this->connection->quote_name($name);
+				$name = $this->connection->quoteName($name);
 
 			if (is_array($value))
 				$sql .= "$g$name IN(?)";
@@ -142,9 +142,9 @@ class Expressions
 		return array($sql,array_values($hash));
 	}
 
-	private function substitute(&$values, $substitute, $pos, $parameter_index)
+	private function substitute(&$values, $substitute, $pos, $parameterIndex)
 	{
-		$value = $values[$parameter_index];
+		$value = $values[$parameterIndex];
 
 		if (is_array($value))
 		{
@@ -153,7 +153,7 @@ class Expressions
 				$ret = '';
 
 				for ($i=0,$n=count($value); $i<$n; ++$i)
-					$ret .= ($i > 0 ? ',' : '') . $this->stringify_value($value[$i]);
+					$ret .= ($i > 0 ? ',' : '') . $this->stringifyValue($value[$i]);
 
 				return $ret;
 			}
@@ -161,20 +161,20 @@ class Expressions
 		}
 
 		if ($substitute)
-			return $this->stringify_value($value);
+			return $this->stringifyValue($value);
 
 		return $this->expressions[$pos];
 	}
 
-	private function stringify_value($value)
+	private function stringifyValue($value)
 	{
 		if (is_null($value))
 			return "NULL";
 
-		return is_string($value) ? $this->quote_string($value) : $value;
+		return is_string($value) ? $this->quoteString($value) : $value;
 	}
 
-	private function quote_string($value)
+	private function quoteString($value)
 	{
 		if ($this->connection)
 			return $this->connection->escape($value);

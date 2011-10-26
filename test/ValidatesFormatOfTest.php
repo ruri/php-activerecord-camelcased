@@ -4,74 +4,74 @@ include 'helpers/config.php';
 class BookFormat extends ActiveRecord\Model
 {
 	static $table = 'books';
-	static $validates_format_of = array(
+	static $validatesFormatOf = array(
 		array('name')
 	);
 };
 
 class ValidatesFormatOfTest extends DatabaseTest
 {
-	public function set_up($connection_name=null)
+	public function setUp($connectionName=null)
 	{
-		parent::set_up($connection_name);
-		BookFormat::$validates_format_of[0] = array('name');
+		parent::setUp($connectionName);
+		BookFormat::$validatesFormatOf[0] = array('name');
 	}
 
-	public function test_format()
+	public function testFormat()
 	{
-		BookFormat::$validates_format_of[0]['with'] = '/^[a-z\W]*$/';
+		BookFormat::$validatesFormatOf[0]['with'] = '/^[a-z\W]*$/';
 		$book = new BookFormat(array('author_id' => 1, 'name' => 'testing reg'));
 		$book->save();
-		$this->assert_false($book->errors->is_invalid('name'));
+		$this->assertFalse($book->errors->isInvalid('name'));
 
-		BookFormat::$validates_format_of[0]['with'] = '/[0-9]/';
+		BookFormat::$validatesFormatOf[0]['with'] = '/[0-9]/';
 		$book = new BookFormat(array('author_id' => 1, 'name' => 12));
 		$book->save();
-		$this->assert_false($book->errors->is_invalid('name'));
+		$this->assertFalse($book->errors->isInvalid('name'));
 	}
 
-	public function test_invalid_null()
+	public function testInvalidNull()
 	{
-		BookFormat::$validates_format_of[0]['with'] = '/[^0-9]/';
+		BookFormat::$validatesFormatOf[0]['with'] = '/[^0-9]/';
 		$book = new BookFormat;
 		$book->name = null;
 		$book->save();
-		$this->assert_true($book->errors->is_invalid('name'));
+		$this->assertTrue($book->errors->isInvalid('name'));
 	}
 
-	public function test_invalid_blank()
+	public function testInvalidBlank()
 	{
-		BookFormat::$validates_format_of[0]['with'] = '/[^0-9]/';
+		BookFormat::$validatesFormatOf[0]['with'] = '/[^0-9]/';
 		$book = new BookFormat;
 		$book->name = '';
 		$book->save();
-		$this->assert_true($book->errors->is_invalid('name'));
+		$this->assertTrue($book->errors->isInvalid('name'));
 	}
 
-	public function test_valid_blank_andallow_blank()
+	public function testValidBlankAndallowBlank()
 	{
-		BookFormat::$validates_format_of[0]['allow_blank'] = true;
-		BookFormat::$validates_format_of[0]['with'] = '/[^0-9]/';
+		BookFormat::$validatesFormatOf[0]['allow_blank'] = true;
+		BookFormat::$validatesFormatOf[0]['with'] = '/[^0-9]/';
 		$book = new BookFormat(array('author_id' => 1, 'name' => ''));
 		$book->save();
-		$this->assert_false($book->errors->is_invalid('name'));
+		$this->assertFalse($book->errors->isInvalid('name'));
 	}
 
-	public function test_valid_null_and_allow_null()
+	public function testValidNullAndAllowNull()
 	{
-		BookFormat::$validates_format_of[0]['allow_null'] = true;
-		BookFormat::$validates_format_of[0]['with'] = '/[^0-9]/';
+		BookFormat::$validatesFormatOf[0]['allow_null'] = true;
+		BookFormat::$validatesFormatOf[0]['with'] = '/[^0-9]/';
 		$book = new BookFormat();
-		$book->author_id = 1;
+		$book->authorId = 1;
 		$book->name = null;
 		$book->save();
-		$this->assert_false($book->errors->is_invalid('name'));
+		$this->assertFalse($book->errors->isInvalid('name'));
 	}
 
 	/**
 	 * @expectedException ActiveRecord\ValidationsArgumentError
 	 */
-	public function test_invalid_lack_of_with_key()
+	public function testInvalidLackOfWithKey()
 	{
 		$book = new BookFormat;
 		$book->name = null;
@@ -81,32 +81,32 @@ class ValidatesFormatOfTest extends DatabaseTest
 	/**
 	 * @expectedException ActiveRecord\ValidationsArgumentError
 	 */
-	public function test_invalid_with_expression_as_non_string()
+	public function testInvalidWithExpressionAsNonString()
 	{
-		BookFormat::$validates_format_of[0]['with'] = array('test');
+		BookFormat::$validatesFormatOf[0]['with'] = array('test');
 		$book = new BookFormat;
 		$book->name = null;
 		$book->save();
 	}
 
-	public function test_invalid_with_expression_as_non_regexp()
+	public function testInvalidWithExpressionAsNonRegexp()
 	{
-		BookFormat::$validates_format_of[0]['with'] = 'blah';
+		BookFormat::$validatesFormatOf[0]['with'] = 'blah';
 		$book = new BookFormat;
 		$book->name = 'blah';
 		$book->save();
-		$this->assert_true($book->errors->is_invalid('name'));
+		$this->assertTrue($book->errors->isInvalid('name'));
 	}
 
-	public function test_custom_message()
+	public function testCustomMessage()
 	{
-		BookFormat::$validates_format_of[0]['message'] = 'is using a custom message.';
-		BookFormat::$validates_format_of[0]['with'] = '/[^0-9]/';
+		BookFormat::$validatesFormatOf[0]['message'] = 'is using a custom message.';
+		BookFormat::$validatesFormatOf[0]['with'] = '/[^0-9]/';
 
 		$book = new BookFormat;
 		$book->name = null;
 		$book->save();
-		$this->assert_equals('is using a custom message.', $book->errors->on('name'));
+		$this->assertEquals('is using a custom message.', $book->errors->on('name'));
 	}
 };
 ?>

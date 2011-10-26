@@ -10,8 +10,8 @@ use Closure;
  *
  * <code>
  * ActiveRecord::initialize(function($cfg) {
- *   $cfg->set_model_home('models');
- *   $cfg->set_connections(array(
+ *   $cfg->setModelHome('models');
+ *   $cfg->setConnections(array(
  *     'development' => 'mysql://user:pass@development.com/awesome_development',
  *     'production' => 'mysql://user:pass@production.com/awesome_production'));
  * });
@@ -26,8 +26,8 @@ class Config extends Singleton
 	 *
 	 * <code>
 	 * ActiveRecord\Config::initialize(function($cfg) {
-	 *   $cfg->set_model_directory('/your/app/models');
-	 *   $cfg->set_connections(array(
+	 *   $cfg->setModelDirectory('/your/app/models');
+	 *   $cfg->setConnections(array(
 	 *     'development' => 'mysql://user:pass@development.com/awesome_development',
 	 *     'production' => 'mysql://user:pass@production.com/awesome_production'));
 	 * });
@@ -41,7 +41,7 @@ class Config extends Singleton
 	 *
 	 * @var string
 	 */
-	private $default_connection = 'development';
+	private $defaultConnection = 'development';
 
 	/**
 	 * Contains the list of database connection strings.
@@ -56,7 +56,7 @@ class Config extends Singleton
 	 * @see activerecord_autoload
 	 * @var string
 	 */
-	private $model_directory;
+	private $modelDirectory;
 
 	/**
 	 * Switch for logging.
@@ -77,7 +77,7 @@ class Config extends Singleton
 	 *
 	 * @var string
 	 */
-	private $date_format = \DateTime::ISO8601;
+	private $dateFormat = \DateTime::ISO8601;
 
 	/**
 	 * Allows config initialization using a closure.
@@ -86,8 +86,8 @@ class Config extends Singleton
 	 *
 	 * <code>
 	 * ActiveRecord\Config::initialize(function($cfg) {
-	 *   $cfg->set_model_directory('/path/to/your/model_directory');
-	 *   $cfg->set_connections(array(
+	 *   $cfg->setModelDirectory('/path/to/your/model_directory');
+	 *   $cfg->setConnections(array(
 	 *     'development' => 'mysql://username:password@127.0.0.1/database_name'));
 	 * });
 	 * </code>
@@ -96,8 +96,8 @@ class Config extends Singleton
 	 *
 	 * <code>
 	 * $cfg = ActiveRecord\Config::instance();
-	 * $cfg->set_model_directory('/path/to/your/model_directory');
-	 * $cfg->set_connections(array('development' =>
+	 * $cfg->setModelDirectory('/path/to/your/model_directory');
+	 * $cfg->setConnections(array('development' =>
   	 *   'mysql://username:password@localhost/database_name'));
 	 * </code>
 	 *
@@ -113,22 +113,22 @@ class Config extends Singleton
 	 * Sets the list of database connection strings.
 	 *
 	 * <code>
-	 * $config->set_connections(array(
+	 * $config->setConnections(array(
 	 *     'development' => 'mysql://username:password@127.0.0.1/database_name'));
 	 * </code>
 	 *
 	 * @param array $connections Array of connections
-	 * @param string $default_connection Optionally specify the default_connection
+	 * @param string $defaultConnection Optionally specify the default_connection
 	 * @return void
 	 * @throws ActiveRecord\ConfigException
 	 */
-	public function set_connections($connections, $default_connection=null)
+	public function setConnections($connections, $defaultConnection=null)
 	{
 		if (!is_array($connections))
 			throw new ConfigException("Connections must be an array");
 
-		if ($default_connection)
-			$this->set_default_connection($default_connection);
+		if ($defaultConnection)
+			$this->setDefaultConnection($defaultConnection);
 
 		$this->connections = $connections;
 	}
@@ -138,7 +138,7 @@ class Config extends Singleton
 	 *
 	 * @return array
 	 */
-	public function get_connections()
+	public function getConnections()
 	{
 		return $this->connections;
 	}
@@ -149,7 +149,7 @@ class Config extends Singleton
 	 * @param string $name Name of connection to retrieve
 	 * @return string connection info for specified connection name
 	 */
-	public function get_connection($name)
+	public function getConnection($name)
 	{
 		if (array_key_exists($name, $this->connections))
 			return $this->connections[$name];
@@ -162,10 +162,10 @@ class Config extends Singleton
 	 *
 	 * @return string
 	 */
-	public function get_default_connection_string()
+	public function getDefaultConnectionString()
 	{
-		return array_key_exists($this->default_connection,$this->connections) ?
-			$this->connections[$this->default_connection] : null;
+		return array_key_exists($this->defaultConnection,$this->connections) ?
+			$this->connections[$this->defaultConnection] : null;
 	}
 
 	/**
@@ -173,9 +173,9 @@ class Config extends Singleton
 	 *
 	 * @return string
 	 */
-	public function get_default_connection()
+	public function getDefaultConnection()
 	{
-		return $this->default_connection;
+		return $this->defaultConnection;
 	}
 
 	/**
@@ -184,9 +184,9 @@ class Config extends Singleton
 	 * @param string $name Name of a connection in the connections array
 	 * @return void
 	 */
-	public function set_default_connection($name)
+	public function setDefaultConnection($name)
 	{
-		$this->default_connection = $name;
+		$this->defaultConnection = $name;
 	}
 
 	/**
@@ -195,9 +195,9 @@ class Config extends Singleton
 	 * @param string $dir Directory path containing your models
 	 * @return void
 	 */
-	public function set_model_directory($dir)
+	public function setModelDirectory($dir)
 	{
-		$this->model_directory = $dir;
+		$this->modelDirectory = $dir;
 	}
 
 	/**
@@ -206,12 +206,12 @@ class Config extends Singleton
 	 * @return string
 	 * @throws ConfigException if specified directory was not found
 	 */
-	public function get_model_directory()
+	public function getModelDirectory()
 	{
-		if ($this->model_directory && !file_exists($this->model_directory))
-			throw new ConfigException('Invalid or non-existent directory: '.$this->model_directory);
+		if ($this->modelDirectory && !file_exists($this->modelDirectory))
+			throw new ConfigException('Invalid or non-existent directory: '.$this->modelDirectory);
 
-		return $this->model_directory;
+		return $this->modelDirectory;
 	}
 
 	/**
@@ -220,7 +220,7 @@ class Config extends Singleton
 	 * @param boolean $bool
 	 * @return void
 	 */
-	public function set_logging($bool)
+	public function setLogging($bool)
 	{
 		$this->logging = (bool)$bool;
 	}
@@ -232,7 +232,7 @@ class Config extends Singleton
 	 * @return void
 	 * @throws ConfigException if Logger objecct does not implement public log()
 	 */
-	public function set_logger($logger)
+	public function setLogger($logger)
 	{
 		$klass = Reflections::instance()->add($logger)->get($logger);
 
@@ -247,7 +247,7 @@ class Config extends Singleton
 	 *
 	 * @return boolean
 	 */
-	public function get_logging()
+	public function getLogging()
 	{
 		return $this->logging;
 	}
@@ -257,7 +257,7 @@ class Config extends Singleton
 	 *
 	 * @return object
 	 */
-	public function get_logger()
+	public function getLogger()
 	{
 		return $this->logger;
 	}
@@ -265,18 +265,18 @@ class Config extends Singleton
 	/**
 	 * @deprecated
 	 */
-	public function get_date_format()
+	public function getDateFormat()
 	{
-		trigger_error('Use ActiveRecord\Serialization::$DATETIME_FORMAT. Config::get_date_format() has been deprecated.', E_USER_DEPRECATED);
+		trigger_error('Use ActiveRecord\Serialization::$DATETIME_FORMAT. Config::getDateFormat() has been deprecated.', E_USER_DEPRECATED);
 		return Serialization::$DATETIME_FORMAT;
 	}
 
 	/**
 	 * @deprecated
 	 */
-	public function set_date_format($format)
+	public function setDateFormat($format)
 	{
-		trigger_error('Use ActiveRecord\Serialization::$DATETIME_FORMAT. Config::set_date_format() has been deprecated.', E_USER_DEPRECATED);
+		trigger_error('Use ActiveRecord\Serialization::$DATETIME_FORMAT. Config::setDateFormat() has been deprecated.', E_USER_DEPRECATED);
 		Serialization::$DATETIME_FORMAT = $format;
 	}
 
@@ -289,14 +289,14 @@ class Config extends Singleton
 	 * Example:
 	 *
 	 * <code>
-	 * $config->set_cache("memcached://localhost");
-	 * $config->set_cache("memcached://localhost",array("expire" => 60));
+	 * $config->setCache("memcached://localhost");
+	 * $config->setCache("memcached://localhost",array("expire" => 60));
 	 * </code>
 	 *
 	 * @param string $url Url to your cache server.
 	 * @param array $options Array of options
 	 */
-	public function set_cache($url, $options=array())
+	public function setCache($url, $options=array())
 	{
 		Cache::initialize($url,$options);
 	}

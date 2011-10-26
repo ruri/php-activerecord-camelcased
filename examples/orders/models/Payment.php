@@ -2,7 +2,7 @@
 class Payment extends ActiveRecord\Model
 {
 	// payment belongs to a person
-	static $belongs_to = array(
+	static $belongsTo = array(
 		array('person'),
 		array('order'));
 }

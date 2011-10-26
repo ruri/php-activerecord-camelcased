@@ -3,14 +3,14 @@ class SnakeCase_PHPUnit_Framework_TestCase extends PHPUnit_Framework_TestCase
 {
 	public function __call($meth, $args)
 	{
-		$camel_cased_method = ActiveRecord\Inflector::instance()->camelize($meth);
+		$camelCasedMethod = ActiveRecord\Inflector::instance()->camelize($meth);
 
-		if (method_exists($this, $camel_cased_method))
-			return call_user_func_array(array($this, $camel_cased_method), $args);
+		if (method_exists($this, $camelCasedMethod))
+			return call_user_func_array(array($this, $camelCasedMethod), $args);
 
-		$class_name = get_called_class();
+		$className = get_called_class();
 		$trace = debug_backtrace();
-		die("PHP Fatal Error:  Call to undefined method $class_name::$meth() in {$trace[1]['file']} on line {$trace[1]['line']}" . PHP_EOL);
+		die("PHP Fatal Error:  Call to undefined method $className::$meth() in {$trace[1]['file']} on line {$trace[1]['line']}" . PHP_EOL);
 	}
 
 	public function setUp()
@@ -25,7 +25,7 @@ class SnakeCase_PHPUnit_Framework_TestCase extends PHPUnit_Framework_TestCase
 			call_user_func_array(array($this,'tear_down'),func_get_args());
 	}
 
-	private function setup_assert_keys($args)
+	private function setupAssertKeys($args)
 	{
 		$last = count($args)-1;
 		$keys = array_slice($args,0,$last);
@@ -33,32 +33,32 @@ class SnakeCase_PHPUnit_Framework_TestCase extends PHPUnit_Framework_TestCase
 		return array($keys,$array);
 	}
 
-	public function assert_has_keys(/* $keys..., $array */)
+	public function assertHasKeys(/* $keys..., $array */)
 	{
-		list($keys,$array) = $this->setup_assert_keys(func_get_args());
+		list($keys,$array) = $this->setupAssertKeys(func_get_args());
 
-		$this->assert_not_null($array,'Array was null');
+		$this->assertNotNull($array,'Array was null');
 
 		foreach ($keys as $name)
-			$this->assert_array_has_key($name,$array);
+			$this->assertArrayHasKey($name,$array);
 	}
 
-	public function assert_doesnt_has_keys(/* $keys..., $array */)
+	public function assertDoesntHasKeys(/* $keys..., $array */)
 	{
-		list($keys,$array) = $this->setup_assert_keys(func_get_args());
+		list($keys,$array) = $this->setupAssertKeys(func_get_args());
 
 		foreach ($keys as $name)
-			$this->assert_array_not_has_key($name,$array);
+			$this->assertArrayNotHasKey($name,$array);
 	}
 
-	public function assert_is_a($expected_class, $object)
+	public function assertIsA($expectedClass, $object)
 	{
-		$this->assert_equals($expected_class,get_class($object));
+		$this->assertEquals($expectedClass,get_class($object));
 	}
 
-	public function assert_datetime_equals($expected, $actual)
+	public function assertDatetimeEquals($expected, $actual)
 	{
-		$this->assert_equals($expected->format(DateTime::ISO8601),$actual->format(DateTime::ISO8601));
+		$this->assertEquals($expected->format(DateTime::ISO8601),$actual->format(DateTime::ISO8601));
 	}
 }
 ?>

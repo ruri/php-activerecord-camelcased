@@ -36,13 +36,13 @@ namespace ActiveRecord;
 
 use \Closure;
 
-function classify($class_name, $singularize=false)
+function classify($className, $singularize=false)
 {
 	if ($singularize)
-    $class_name = Utils::singularize($class_name);
+    $className = Utils::singularize($className);
 
-	$class_name = Inflector::instance()->camelize($class_name);
-	return ucfirst($class_name);
+	$className = Inflector::instance()->camelize($className);
+	return ucfirst($className);
 }
 
 // http://snippets.dzone.com/posts/show/4660
@@ -79,29 +79,29 @@ function is_hash(&$array)
  * @return string stripped class name
  * @access public
  */
-function denamespace($class_name)
+function denamespace($className)
 {
-	if (is_object($class_name))
-		$class_name = get_class($class_name);
+	if (is_object($className))
+		$className = get_class($className);
 
-	if (has_namespace($class_name))
+	if (has_namespace($className))
 	{
-		$parts = explode('\\', $class_name);
+		$parts = explode('\\', $className);
 		return end($parts);
 	}
-	return $class_name;
+	return $className;
 }
 
-function get_namespaces($class_name)
+function get_namespaces($className)
 {
-	if (has_namespace($class_name))
-		return explode('\\', $class_name);
+	if (has_namespace($className))
+		return explode('\\', $className);
 	return null;
 }
 
-function has_namespace($class_name)
+function has_namespace($className)
 {
-	if (strpos($class_name, '\\') !== false)
+	if (strpos($className, '\\') !== false)
 		return true;
 	return false;
 }
@@ -122,16 +122,16 @@ function all($needle, array $haystack)
 	return true;
 }
 
-function collect(&$enumerable, $name_or_closure)
+function collect(&$enumerable, $nameOrClosure)
 {
 	$ret = array();
 
 	foreach ($enumerable as $value)
 	{
-		if (is_string($name_or_closure))
-			$ret[] = is_array($value) ? $value[$name_or_closure] : $value->$name_or_closure;
-		elseif ($name_or_closure instanceof Closure)
-			$ret[] = $name_or_closure($value);
+		if (is_string($nameOrClosure))
+			$ret[] = is_array($value) ? $value[$nameOrClosure] : $value->$nameOrClosure;
+		elseif ($nameOrClosure instanceof Closure)
+			$ret[] = $nameOrClosure($value);
 	}
 	return $ret;
 }
@@ -161,12 +161,12 @@ function wrap_strings_in_arrays(&$strings)
  */
 class Utils
 {
-	public static function extract_options($options)
+	public static function extractOptions($options)
 	{
 		return is_array(end($options)) ? end($options) : array();
 	}
 
-	public static function add_condition(&$conditions=array(), $condition, $conjuction='AND')
+	public static function addCondition(&$conditions=array(), $condition, $conjuction='AND')
 	{
 		if (is_array($condition))
 		{
@@ -184,7 +184,7 @@ class Utils
 		return $conditions;
 	}
 
-	public static function human_attribute($attr)
+	public static function humanAttribute($attr)
 	{
 		$inflector = Inflector::instance();
 		$inflected = $inflector->variablize($attr);
@@ -193,12 +193,12 @@ class Utils
 		return ucfirst(str_replace('_', ' ', $normal));
 	}
 
-	public static function is_odd($number)
+	public static function isOdd($number)
 	{
 		return $number & 1;
 	}
 
-	public static function is_a($type, $var)
+	public static function isA($type, $var)
 	{
 		switch($type)
 		{
@@ -211,7 +211,7 @@ class Utils
 		return false;
 	}
 
-	public static function is_blank($var)
+	public static function isBlank($var)
 	{
 		return 0 === strlen($var);
 	}
@@ -343,7 +343,7 @@ class Utils
         return $string;
     }
 
-    public static function pluralize_if($count, $string)
+    public static function pluralizeIf($count, $string)
     {
         if ($count == 1)
             return $string;

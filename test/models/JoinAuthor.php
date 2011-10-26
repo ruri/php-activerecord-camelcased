@@ -1,7 +1,7 @@
 <?php
 class JoinAuthor extends ActiveRecord\Model
 {
-	static $table_name = 'authors';
+	static $tableName = 'authors';
 	static $pk = 'author_id';
 };
 ?>

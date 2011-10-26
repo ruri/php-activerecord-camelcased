@@ -6,85 +6,85 @@ use ActiveRecord\DateTime;
 
 class ColumnTest extends SnakeCase_PHPUnit_Framework_TestCase
 {
-	public function set_up()
+	public function setUp()
 	{
 		$this->column = new Column();
-		$this->conn = ActiveRecord\ConnectionManager::get_connection(ActiveRecord\Config::instance()->get_default_connection());
+		$this->conn = ActiveRecord\ConnectionManager::getConnection(ActiveRecord\Config::instance()->getDefaultConnection());
 	}
 
-	public function assert_mapped_type($type, $raw_type)
+	public function assertMappedType($type, $rawType)
 	{
-		$this->column->raw_type = $raw_type;
-		$this->assert_equals($type,$this->column->map_raw_type());
+		$this->column->rawType = $rawType;
+		$this->assertEquals($type,$this->column->mapRawType());
 	}
 
-	public function assert_cast($type, $casted_value, $original_value)
+	public function assertCast($type, $castedValue, $originalValue)
 	{
 		$this->column->type = $type;
-		$value = $this->column->cast($original_value,$this->conn);
+		$value = $this->column->cast($originalValue,$this->conn);
 
-		if ($original_value != null && ($type == Column::DATETIME || $type == Column::DATE))
-			$this->assert_true($value instanceof DateTime);
+		if ($originalValue != null && ($type == Column::DATETIME || $type == Column::DATE))
+			$this->assertTrue($value instanceof DateTime);
 		else
-			$this->assert_same($casted_value,$value);
+			$this->assertSame($castedValue,$value);
 	}
 
-	public function test_map_raw_type_dates()
+	public function testMapRawTypeDates()
 	{
-		$this->assert_mapped_type(Column::DATETIME,'datetime');
-		$this->assert_mapped_type(Column::DATE,'date');
+		$this->assertMappedType(Column::DATETIME,'datetime');
+		$this->assertMappedType(Column::DATE,'date');
 	}
 
-	public function test_map_raw_type_integers()
+	public function testMapRawTypeIntegers()
 	{
-		$this->assert_mapped_type(Column::INTEGER,'integer');
-		$this->assert_mapped_type(Column::INTEGER,'int');
-		$this->assert_mapped_type(Column::INTEGER,'tinyint');
-		$this->assert_mapped_type(Column::INTEGER,'smallint');
-		$this->assert_mapped_type(Column::INTEGER,'mediumint');
-		$this->assert_mapped_type(Column::INTEGER,'bigint');
+		$this->assertMappedType(Column::INTEGER,'integer');
+		$this->assertMappedType(Column::INTEGER,'int');
+		$this->assertMappedType(Column::INTEGER,'tinyint');
+		$this->assertMappedType(Column::INTEGER,'smallint');
+		$this->assertMappedType(Column::INTEGER,'mediumint');
+		$this->assertMappedType(Column::INTEGER,'bigint');
 	}
 
-	public function test_map_raw_type_decimals()
+	public function testMapRawTypeDecimals()
 	{
-		$this->assert_mapped_type(Column::DECIMAL,'float');
-		$this->assert_mapped_type(Column::DECIMAL,'double');
-		$this->assert_mapped_type(Column::DECIMAL,'numeric');
-		$this->assert_mapped_type(Column::DECIMAL,'dec');
+		$this->assertMappedType(Column::DECIMAL,'float');
+		$this->assertMappedType(Column::DECIMAL,'double');
+		$this->assertMappedType(Column::DECIMAL,'numeric');
+		$this->assertMappedType(Column::DECIMAL,'dec');
 	}
 
-	public function test_map_raw_type_strings()
+	public function testMapRawTypeStrings()
 	{
-		$this->assert_mapped_type(Column::STRING,'string');
-		$this->assert_mapped_type(Column::STRING,'varchar');
-		$this->assert_mapped_type(Column::STRING,'text');
+		$this->assertMappedType(Column::STRING,'string');
+		$this->assertMappedType(Column::STRING,'varchar');
+		$this->assertMappedType(Column::STRING,'text');
 	}
 
-	public function test_map_raw_type_default_to_string()
+	public function testMapRawTypeDefaultToString()
 	{
-		$this->assert_mapped_type(Column::STRING,'bajdslfjasklfjlksfd');
+		$this->assertMappedType(Column::STRING,'bajdslfjasklfjlksfd');
 	}
 
-	public function test_map_raw_type_changes_integer_to_int()
+	public function testMapRawTypeChangesIntegerToInt()
 	{
-		$this->column->raw_type = 'integer';
-		$this->column->map_raw_type();
-		$this->assert_equals('int',$this->column->raw_type);
+		$this->column->rawType = 'integer';
+		$this->column->mapRawType();
+		$this->assertEquals('int',$this->column->rawType);
 	}
 
-	public function test_cast()
+	public function testCast()
 	{
 		$datetime = new DateTime('2001-01-01');
-		$this->assert_cast(Column::INTEGER,1,'1');
-		$this->assert_cast(Column::INTEGER,1,'1.5');
-		$this->assert_cast(Column::DECIMAL,1.5,'1.5');
-		$this->assert_cast(Column::DATETIME,$datetime,'2001-01-01');
-		$this->assert_cast(Column::DATE,$datetime,'2001-01-01');
-		$this->assert_cast(Column::DATE,$datetime,$datetime);
-		$this->assert_cast(Column::STRING,'bubble tea','bubble tea');
+		$this->assertCast(Column::INTEGER,1,'1');
+		$this->assertCast(Column::INTEGER,1,'1.5');
+		$this->assertCast(Column::DECIMAL,1.5,'1.5');
+		$this->assertCast(Column::DATETIME,$datetime,'2001-01-01');
+		$this->assertCast(Column::DATE,$datetime,'2001-01-01');
+		$this->assertCast(Column::DATE,$datetime,$datetime);
+		$this->assertCast(Column::STRING,'bubble tea','bubble tea');
 	}
 
-	public function test_cast_leave_null_alone()
+	public function testCastLeaveNullAlone()
 	{
 		$types = array(
 			Column::STRING,
@@ -94,24 +94,24 @@ class ColumnTest extends SnakeCase_PHPUnit_Framework_TestCase
 			Column::DATE);
 
 		foreach ($types as $type) {
-			$this->assert_cast($type,null,null);
+			$this->assertCast($type,null,null);
 		}
 	}
 
-	public function test_empty_and_null_date_strings_should_return_null()
+	public function testEmptyAndNullDateStringsShouldReturnNull()
 	{
 		$column = new Column();
 		$column->type = Column::DATE;
-		$this->assert_equals(null,$column->cast(null,$this->conn));
-		$this->assert_equals(null,$column->cast('',$this->conn));
+		$this->assertEquals(null,$column->cast(null,$this->conn));
+		$this->assertEquals(null,$column->cast('',$this->conn));
 	}
 
-	public function test_empty_and_null_datetime_strings_should_return_null()
+	public function testEmptyAndNullDatetimeStringsShouldReturnNull()
 	{
 		$column = new Column();
 		$column->type = Column::DATETIME;
-		$this->assert_equals(null,$column->cast(null,$this->conn));
-		$this->assert_equals(null,$column->cast('',$this->conn));
+		$this->assertEquals(null,$column->cast(null,$this->conn));
+		$this->assertEquals(null,$column->cast('',$this->conn));
 	}
 }
 ?>

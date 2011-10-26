@@ -1,36 +1,36 @@
 <?php
 class Venue extends ActiveRecord\Model
 {
-	static $use_custom_get_state_getter = false;
-	static $use_custom_set_state_setter = false;
+	static $useCustomGetStateGetter = false;
+	static $useCustomSetStateSetter = false;
 	
 	
-	static $has_many = array(
+	static $hasMany = array(
 		'events',
 		array('hosts', 'through' => 'events')
 	);
 
-	static $has_one;
+	static $hasOne;
 
-	static $alias_attribute = array(
+	static $aliasAttribute = array(
 		'marquee' => 'name',
 		'mycity' => 'city'
 	);
 	
-	public function get_state()
+	public function getState()
 	{
-		if (self::$use_custom_get_state_getter)
-			return strtolower($this->read_attribute('state'));
+		if (self::$useCustomGetStateGetter)
+			return strtolower($this->readAttribute('state'));
 		else
-			return $this->read_attribute('state');
+			return $this->readAttribute('state');
 	}
 	
-	public function set_state($value)
+	public function setState($value)
 	{
-		if (self::$use_custom_set_state_setter)
-			return $this->assign_attribute('state', $value . '#');
+		if (self::$useCustomSetStateSetter)
+			return $this->assignAttribute('state', $value . '#');
 		else
-			return $this->assign_attribute('state', $value);
+			return $this->assignAttribute('state', $value);
 	}
 	
 };

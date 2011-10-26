@@ -24,8 +24,8 @@ class Cache
 	 * a shared key/store (for instance a shared Memcached db)
 	 *
 	 * Ex:
-	 * $cfg_ar = ActiveRecord\Config::instance();
-	 * $cfg_ar->set_cache('memcache://localhost:11211',array('namespace' => 'my_cool_app',
+	 * $cfgAr = ActiveRecord\Config::instance();
+	 * $cfgAr->setCache('memcache://localhost:11211',array('namespace' => 'my_cool_app',
 	 *																											 'expire'		 => 120
 	 *																											 ));
 	 *
@@ -61,7 +61,7 @@ class Cache
 
 	public static function get($key, $closure)
 	{
-		$key = static::get_namespace() . $key;
+		$key = static::getNamespace() . $key;
 		
 		if (!static::$adapter)
 			return $closure();
@@ -72,7 +72,7 @@ class Cache
 		return $value;
 	}
 
-	private static function get_namespace()
+	private static function getNamespace()
 	{
 		return (isset(static::$options['namespace']) && strlen(static::$options['namespace']) > 0) ? (static::$options['namespace'] . "::") : "";
 	}

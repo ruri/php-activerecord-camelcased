@@ -29,19 +29,19 @@ if (getenv('LOG') !== 'false')
 
 ActiveRecord\Config::initialize(function($cfg)
 {
-	$cfg->set_model_directory(realpath(__DIR__ . '/../models'));
-	$cfg->set_connections(array(
+	$cfg->setModelDirectory(realpath(__DIR__ . '/../models'));
+	$cfg->setConnections(array(
 		'mysql'  => getenv('PHPAR_MYSQL')  ?: 'mysql://test:test@127.0.0.1/test',
 		'pgsql'  => getenv('PHPAR_PGSQL')  ?: 'pgsql://test:test@127.0.0.1/test',
 		'oci'    => getenv('PHPAR_OCI')    ?: 'oci://test:test@127.0.0.1/dev',
 		'sqlite' => getenv('PHPAR_SQLITE') ?: 'sqlite://test.db'));
 
-	$cfg->set_default_connection('mysql');
+	$cfg->setDefaultConnection('mysql');
 
 	for ($i=0; $i<count($GLOBALS['argv']); ++$i)
 	{
 		if ($GLOBALS['argv'][$i] == '--adapter')
-			$cfg->set_default_connection($GLOBALS['argv'][$i+1]);
+			$cfg->setDefaultConnection($GLOBALS['argv'][$i+1]);
 		elseif ($GLOBALS['argv'][$i] == '--slow-tests')
 			$GLOBALS['slow_tests'] = true;
 	}
@@ -50,8 +50,8 @@ ActiveRecord\Config::initialize(function($cfg)
 	{
 		$logger = new Log_file(dirname(__FILE__) . '/../log/query.log','ident',array('mode' => 0664, 'timeFormat' =>  '%Y-%m-%d %H:%M:%S'));
 	
-		$cfg->set_logging(true);
-		$cfg->set_logger($logger);
+		$cfg->setLogging(true);
+		$cfg->setLogger($logger);
 	}
 	else
 	{

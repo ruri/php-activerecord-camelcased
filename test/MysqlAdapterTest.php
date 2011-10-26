@@ -6,33 +6,33 @@ require_once __DIR__ . '/../lib/adapters/MysqlAdapter.php';
 
 class MysqlAdapterTest extends AdapterTest
 {
-	public function set_up($connection_name=null)
+	public function setUp($connectionName=null)
 	{
-		parent::set_up('mysql');
+		parent::setUp('mysql');
 	}
 
-	public function test_enum()
+	public function testEnum()
 	{
-		$author_columns = $this->conn->columns('authors');
-		$this->assert_equals('enum',$author_columns['some_enum']->raw_type);
-		$this->assert_equals(Column::STRING,$author_columns['some_enum']->type);
-		$this->assert_same(null,$author_columns['some_enum']->length);
+		$authorColumns = $this->conn->columns('authors');
+		$this->assertEquals('enum',$authorColumns['some_enum']->rawType);
+		$this->assertEquals(Column::STRING,$authorColumns['some_enum']->type);
+		$this->assertSame(null,$authorColumns['some_enum']->length);
 	}
 
-	public function test_set_charset()
+	public function testSetCharset()
 	{
-		$connection_string = ActiveRecord\Config::instance()->get_connection($this->connection_name);
-		$conn = ActiveRecord\Connection::instance($connection_string . '?charset=utf8');
-		$this->assert_equals('SET NAMES ?',$conn->last_query);
+		$connectionString = ActiveRecord\Config::instance()->getConnection($this->connectionName);
+		$conn = ActiveRecord\Connection::instance($connectionString . '?charset=utf8');
+		$this->assertEquals('SET NAMES ?',$conn->lastQuery);
 	}
 
-	public function test_limit_with_null_offset_does_not_contain_offset()
+	public function testLimitWithNullOffsetDoesNotContainOffset()
 	{
 		$ret = array();
 		$sql = 'SELECT * FROM authors ORDER BY name ASC';
-		$this->conn->query_and_fetch($this->conn->limit($sql,null,1),function($row) use (&$ret) { $ret[] = $row; });
+		$this->conn->queryAndFetch($this->conn->limit($sql,null,1),function($row) use (&$ret) { $ret[] = $row; });
 
-		$this->assert_true(strpos($this->conn->last_query, 'LIMIT 1') !== false);
+		$this->assertTrue(strpos($this->conn->lastQuery, 'LIMIT 1') !== false);
 	}
 }
 ?>

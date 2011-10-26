@@ -34,14 +34,14 @@ use Closure;
  *
  * <code>
  * class Person extends ActiveRecord\Model {
- *   static $before_save = array('make_name_uppercase');
- *   static $after_save = array('do_happy_dance');
+ *   static $beforeSave = array('make_name_uppercase');
+ *   static $afterSave = array('do_happy_dance');
  *
- *   public function make_name_uppercase() {
+ *   public function makeNameUppercase() {
  *     $this->name = strtoupper($this->name);
  *   }
  *
- *   public function do_happy_dance() {
+ *   public function doHappyDance() {
  *     happy_dance();
  *   }
  * }
@@ -104,12 +104,12 @@ class CallBack
 	/**
 	 * Creates a CallBack.
 	 *
-	 * @param string $model_class_name The name of a {@link Model} class
+	 * @param string $modelClassName The name of a {@link Model} class
 	 * @return CallBack
 	 */
-	public function __construct($model_class_name)
+	public function __construct($modelClassName)
 	{
-		$this->klass = Reflections::instance()->get($model_class_name);
+		$this->klass = Reflections::instance()->get($modelClassName);
 
 		foreach (static::$VALID_CALLBACKS as $name)
 		{
@@ -119,8 +119,8 @@ class CallBack
 				if (!is_array($definition))
 					$definition = array($definition);
 
-				foreach ($definition as $method_name)
-					$this->register($name,$method_name);
+				foreach ($definition as $methodName)
+					$this->register($name,$methodName);
 			}
 
 			// implicit callbacks that don't need to have a static definition
@@ -137,7 +137,7 @@ class CallBack
 	 * @param $name string Name of a callback (see {@link VALID_CALLBACKS $VALID_CALLBACKS})
 	 * @return array array of callbacks or null if invalid callback name.
 	 */
-	public function get_callbacks($name)
+	public function getCallbacks($name)
 	{
 		return isset($this->registry[$name]) ? $this->registry[$name] : null;
 	}
@@ -151,14 +151,14 @@ class CallBack
 	 *
 	 * @param string $model Model to invoke the callback on.
 	 * @param string $name Name of the callback to invoke
-	 * @param boolean $must_exist Set to true to raise an exception if the callback does not exist.
+	 * @param boolean $mustExist Set to true to raise an exception if the callback does not exist.
 	 * @return mixed null if $name was not a valid callback type or false if a method was invoked
 	 * that was for a before_* callback and that method returned false. If this happens, execution
 	 * of any other callbacks after the offending callback will not occur.
 	 */
-	public function invoke($model, $name, $must_exist=true)
+	public function invoke($model, $name, $mustExist=true)
 	{
-		if ($must_exist && !array_key_exists($name, $this->registry))
+		if ($mustExist && !array_key_exists($name, $this->registry))
 			throw new ActiveRecordException("No callbacks were defined for: $name on " . get_class($model));
 
 		// if it doesn't exist it might be a /(after|before)_(create|update)/ so we still need to run the save
@@ -173,12 +173,12 @@ class CallBack
 		// starts with /(after|before)_(create|update)/
 		if (($first == 'after_' || $first == 'before') && (($second = substr($name,7,5)) == 'creat' || $second == 'updat' || $second == 'reate' || $second == 'pdate'))
 		{
-			$temporal_save = str_replace(array('create', 'update'), 'save', $name);
+			$temporalSave = str_replace(array('create', 'update'), 'save', $name);
 
-			if (!isset($this->registry[$temporal_save]))
-				$this->registry[$temporal_save] = array();
+			if (!isset($this->registry[$temporalSave]))
+				$this->registry[$temporalSave] = array();
 
-			$registry = array_merge($this->registry[$temporal_save], $registry ? $registry : array());
+			$registry = array_merge($this->registry[$temporalSave], $registry ? $registry : array());
 		}
 
 		if ($registry)
@@ -203,39 +203,39 @@ class CallBack
 	 * </ul>
 	 *
 	 * @param string $name Name of callback type (see {@link VALID_CALLBACKS $VALID_CALLBACKS})
-	 * @param mixed $closure_or_method_name Either a closure or the name of a method on the {@link Model}
+	 * @param mixed $closureOrMethodName Either a closure or the name of a method on the {@link Model}
 	 * @param array $options Options array
 	 * @return void
 	 * @throws ActiveRecordException if invalid callback type or callback method was not found
 	 */
-	public function register($name, $closure_or_method_name=null, $options=array())
+	public function register($name, $closureOrMethodName=null, $options=array())
 	{
 		$options = array_merge(array('prepend' => false), $options);
 
-		if (!$closure_or_method_name)
-			$closure_or_method_name = $name;
+		if (!$closureOrMethodName)
+			$closureOrMethodName = $name;
 
 		if (!in_array($name,self::$VALID_CALLBACKS))
 			throw new ActiveRecordException("Invalid callback: $name");
 
-		if (!($closure_or_method_name instanceof Closure))
+		if (!($closureOrMethodName instanceof Closure))
 		{
 			if (!isset($this->publicMethods))
 				$this->publicMethods = get_class_methods($this->klass->getName());
 
-			if (!in_array($closure_or_method_name, $this->publicMethods))
+			if (!in_array($closureOrMethodName, $this->publicMethods))
 			{
-				if ($this->klass->hasMethod($closure_or_method_name))
+				if ($this->klass->hasMethod($closureOrMethodName))
 				{
 					// Method is private or protected
 					throw new ActiveRecordException("Callback methods need to be public (or anonymous closures). " .
-						"Please change the visibility of " . $this->klass->getName() . "->" . $closure_or_method_name . "()");
+						"Please change the visibility of " . $this->klass->getName() . "->" . $closureOrMethodName . "()");
 				}
 				else
 				{
 					// i'm a dirty ruby programmer
 					throw new ActiveRecordException("Unknown method for callback: $name" .
-						(is_string($closure_or_method_name) ? ": #$closure_or_method_name" : ""));
+						(is_string($closureOrMethodName) ? ": #$closureOrMethodName" : ""));
 				}
 			}
 		}
@@ -244,9 +244,9 @@ class CallBack
 			$this->registry[$name] = array();
 
 		if ($options['prepend'])
-			array_unshift($this->registry[$name], $closure_or_method_name);
+			array_unshift($this->registry[$name], $closureOrMethodName);
 		else
-			$this->registry[$name][] = $closure_or_method_name;
+			$this->registry[$name][] = $closureOrMethodName;
 	}
 }
 ?>

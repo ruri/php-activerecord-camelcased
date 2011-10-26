@@ -54,7 +54,7 @@ abstract class Inflector
 	 * @param string $s string to check
 	 * @return bool
 	 */
-	public static function is_upper($s)
+	public static function isUpper($s)
 	{
 		return (strtoupper($s) === $s);
 	}
@@ -65,7 +65,7 @@ abstract class Inflector
 	 * @param string $s string to check
 	 * @return bool
 	 */
-	public static function is_lower($s)
+	public static function isLower($s)
 	{
 		return (strtolower($s) === $s);
 	}
@@ -82,7 +82,7 @@ abstract class Inflector
 
 		for ($i=0,$n=strlen($s); $i<$n; ++$i)
 		{
-			if (ctype_alpha($s[$i]) && self::is_upper($s[$i]))
+			if (ctype_alpha($s[$i]) && self::isUpper($s[$i]))
 				$normalized .= '_' . strtolower($s[$i]);
 			else
 				$normalized .= $s[$i];
@@ -101,9 +101,9 @@ abstract class Inflector
 		return preg_replace(array('/[_\- ]+/','/([a-z])([A-Z])/'),array('_','\\1_\\2'),trim($s));
 	}
 
-	public function keyify($class_name)
+	public function keyify($className)
 	{
-		return strtolower($this->underscorify(denamespace($class_name))) . '_id';
+		return strtolower($this->underscorify(denamespace($className))) . '_id';
 	}
 
 	abstract function variablize($s);

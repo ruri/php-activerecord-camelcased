@@ -4,26 +4,26 @@ require_once __DIR__ . '/../lib/Inflector.php';
 
 class InflectorTest extends SnakeCase_PHPUnit_Framework_TestCase
 {
-	public function set_up()
+	public function setUp()
 	{
 		$this->inflector = ActiveRecord\Inflector::instance();
 	}
 
-	public function test_underscorify()
+	public function testUnderscorify()
 	{
-		$this->assert_equals('rm__name__bob',$this->inflector->variablize('rm--name  bob'));
-		$this->assert_equals('One_Two_Three',$this->inflector->underscorify('OneTwoThree'));
+		$this->assertEquals('rm__name__bob',$this->inflector->variablize('rm--name  bob'));
+		$this->assertEquals('One_Two_Three',$this->inflector->underscorify('OneTwoThree'));
 	}
 
-	public function test_tableize()
+	public function testTableize()
 	{
-		$this->assert_equals('angry_people',$this->inflector->tableize('AngryPerson'));
-		$this->assert_equals('my_sqls',$this->inflector->tableize('MySQL'));
+		$this->assertEquals('angry_people',$this->inflector->tableize('AngryPerson'));
+		$this->assertEquals('my_sqls',$this->inflector->tableize('MySQL'));
 	}
 
-	public function test_keyify()
+	public function testKeyify()
 	{
-		$this->assert_equals('building_type_id', $this->inflector->keyify('BuildingType'));
+		$this->assertEquals('building_type_id', $this->inflector->keyify('BuildingType'));
 	}
 };
 ?>
