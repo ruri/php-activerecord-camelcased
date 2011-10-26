@@ -64,7 +64,7 @@ abstract class AbstractRelationship implements InterfaceRelationship
 	 *
 	 * @var array
 	 */
-	static protected $validAssociationOptions = array('class_name', 'class', 'foreign_key', 'conditions', 'select', 'readonly');
+	static protected $validAssociationOptions = array('className', 'class', 'foreignKey', 'conditions', 'select', 'readonly');
 
 	/**
 	 * Constructs a relationship.
@@ -87,13 +87,13 @@ abstract class AbstractRelationship implements InterfaceRelationship
 
 		if (isset($this->options['class']))
 			$this->setClassName($this->options['class']);
-		elseif (isset($this->options['class_name']))
-			$this->setClassName($this->options['class_name']);
+		elseif (isset($this->options['className']))
+			$this->setClassName($this->options['className']);
 
 		$this->attributeName = strtolower(Inflector::instance()->variablize($this->attributeName));
 
-		if (!$this->foreignKey && isset($this->options['foreign_key']))
-			$this->foreignKey = is_array($this->options['foreign_key']) ? $this->options['foreign_key'] : array($this->options['foreign_key']);
+		if (!$this->foreignKey && isset($this->options['foreignKey']))
+			$this->foreignKey = is_array($this->options['foreignKey']) ? $this->options['foreignKey'] : array($this->options['foreignKey']);
 	}
 
 	protected function getTable()
@@ -155,11 +155,11 @@ abstract class AbstractRelationship implements InterfaceRelationship
 
 			$this->setKeys($this->getTable()->class->getName(), true);
 
-			if (!isset($options['class_name'])) {
+			if (!isset($options['className'])) {
 				$class = classify($options['through'], true);
 				$throughTable = $class::table();
 			} else {
-				$class = $options['class_name'];
+				$class = $options['className'];
 				$relation = $class::table()->getRelationship($options['through']);
 				$throughTable = $relation->getTable();
 			}
@@ -432,7 +432,7 @@ class HasMany extends AbstractRelationship
 	 *
 	 * @var array
 	 */
-	static protected $validAssociationOptions = array('primary_key', 'order', 'group', 'having', 'limit', 'offset', 'through', 'source');
+	static protected $validAssociationOptions = array('primaryKey', 'order', 'group', 'having', 'limit', 'offset', 'through', 'source');
 
 	protected $primaryKey;
 
@@ -457,8 +457,8 @@ class HasMany extends AbstractRelationship
 				$this->setClassName($this->options['source']);
 		}
 
-		if (!$this->primaryKey && isset($this->options['primary_key']))
-			$this->primaryKey = is_array($this->options['primary_key']) ? $this->options['primary_key'] : array($this->options['primary_key']);
+		if (!$this->primaryKey && isset($this->options['primaryKey']))
+			$this->primaryKey = is_array($this->options['primaryKey']) ? $this->options['primaryKey'] : array($this->options['primaryKey']);
 
 		if (!$this->className)
 			$this->setInferredClassName();
@@ -616,7 +616,7 @@ class HasAndBelongsToMany extends AbstractRelationship
  *
  * class Person extends ActiveRecord\Model {
  *   static $belongsTo = array(
- *     array('school', 'primary_key' => 'school_id')
+ *     array('school', 'primaryKey' => 'school_id')
  *   );
  * }
  * </code>

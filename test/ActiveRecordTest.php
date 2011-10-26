@@ -82,16 +82,16 @@ class ActiveRecordTest extends DatabaseTest
 
 	public function testGetterUndefinedPropertyExceptionIncludesModelName()
 	{
-		$this->assertExceptionMessageContains("Author->thisBetterNotExist",function()
+		$this->assertExceptionMessageContains("Author->this_better_not_exist",function()
 		{
 			$author = new Author();
-			$author->thisBetterNotExist;
+			$author->this_better_not_exist;
 		});
 	}
 
 	public function testMassAssignmentUndefinedPropertyExceptionIncludesModelName()
 	{
-		$this->assertExceptionMessageContains("Author->thisBetterNotExist",function()
+		$this->assertExceptionMessageContains("Author->this_better_not_exist",function()
 		{
 			new Author(array("this_better_not_exist" => "hi"));
 		});
@@ -99,10 +99,10 @@ class ActiveRecordTest extends DatabaseTest
 
 	public function testSetterUndefinedPropertyExceptionIncludesModelName()
 	{
-		$this->assertExceptionMessageContains("Author->thisBetterNotExist",function()
+		$this->assertExceptionMessageContains("Author->this_better_not_exist",function()
 		{
 			$author = new Author();
-			$author->thisBetterNotExist = "hi";
+			$author->this_better_not_exist = "hi";
 		});
 	}
 
@@ -239,7 +239,7 @@ class ActiveRecordTest extends DatabaseTest
 	{
 		$book = new BookAttrAccessible(array('name' => 'should not be set', 'author_id' => 1));
 		$this->assertNull($book->name);
-		$this->assertEquals(1,$book->authorId);
+		$this->assertEquals(1,$book->author_id);
 		$book->name = 'test';
 		$this->assertEquals('test', $book->name);
 	}
@@ -247,9 +247,9 @@ class ActiveRecordTest extends DatabaseTest
 	public function testAttrProtected()
 	{
 		$book = new BookAttrAccessible(array('book_id' => 999));
-		$this->assertNull($book->bookId);
-		$book->bookId = 999;
-		$this->assertEquals(999, $book->bookId);
+		$this->assertNull($book->book_id);
+		$book->book_id = 999;
+		$this->assertEquals(999, $book->book_id);
 	}
 
 	public function testIsset()
@@ -266,7 +266,7 @@ class ActiveRecordTest extends DatabaseTest
 
 		try {
 			$book->save();
-			$this-fail('expected exception ActiveRecord\ReadonlyException');
+			$this->fail('expected exception ActiveRecord\ReadonlyException');
 		} catch (ActiveRecord\ReadonlyException $e) {
 		}
 
@@ -277,14 +277,14 @@ class ActiveRecordTest extends DatabaseTest
 	public function testCastWhenUsingSetter()
 	{
 		$book = new Book();
-		$book->bookId = '1';
-		$this->assertSame(1,$book->bookId);
+		$book->book_id = '1';
+		$this->assertSame(1,$book->book_id);
 	}
 
 	public function testCastWhenLoading()
 	{
 		$book = Book::find(1);
-		$this->assertSame(1,$book->bookId);
+		$this->assertSame(1,$book->book_id);
 		$this->assertSame('Ancient Art of Main Tanking',$book->name);
 	}
 
@@ -356,7 +356,7 @@ class ActiveRecordTest extends DatabaseTest
 	public function testDelegatePrefix()
 	{
 		$event = Event::first();
-		$this->assertEquals($event->host->name,$event->wootName);
+		$this->assertEquals($event->host->name,$event->woot_name);
 	}
 
 	public function testDelegateReturnsNullIfRelationshipDoesNotExist()
@@ -409,7 +409,7 @@ class ActiveRecordTest extends DatabaseTest
 	{
 		$author = new Author();
 		$author->password = 'plaintext';
-		$this->assertEquals(md5('plaintext'),$author->encryptedPassword);
+		$this->assertEquals(md5('plaintext'),$author->encrypted_password);
 	}
 
 	public function testSetterWithSameNameAsAnAttribute()
@@ -422,7 +422,7 @@ class ActiveRecordTest extends DatabaseTest
 	public function testGetter()
 	{
 		$book = Book::first();
-		$this->assertEquals(strtoupper($book->name), $book->upperName);
+		$this->assertEquals(strtoupper($book->name), $book->upper_name);
 	}
 
 	public function testGetterWithSameNameAsAnAttribute()
@@ -437,8 +437,8 @@ class ActiveRecordTest extends DatabaseTest
 	public function testSettingInvalidDateShouldSetDateToNull()
 	{
 		$author = new Author();
-		$author->createdAt = 'CURRENT_TIMESTAMP';
-		$this->assertNull($author->createdAt);
+		$author->created_at = 'CURRENT_TIMESTAMP';
+		$this->assertNull($author->created_at);
 	}
 
 	public function testTableName()
@@ -486,15 +486,15 @@ class ActiveRecordTest extends DatabaseTest
 	public function testAssigningPhpDatetimeGetsConvertedToArDatetime()
 	{
 		$author = new Author();
-		$author->createdAt = $now = new \DateTime();
-		$this->assertIsA("ActiveRecord\\DateTime",$author->createdAt);
-		$this->assertDatetimeEquals($now,$author->createdAt);
+		$author->created_at = $now = new \DateTime();
+		$this->assertIsA("ActiveRecord\\DateTime",$author->created_at);
+		$this->assertDatetimeEquals($now,$author->created_at);
 	}
 
 	public function testAssigningFromMassAssignmentPhpDatetimeGetsConvertedToArDatetime()
 	{
 		$author = new Author(array('created_at' => new \DateTime()));
-		$this->assertIsA("ActiveRecord\\DateTime",$author->createdAt);
+		$this->assertIsA("ActiveRecord\\DateTime",$author->created_at);
 	}
 
 	public function testGetRealAttributeName()
@@ -508,7 +508,7 @@ class ActiveRecordTest extends DatabaseTest
 	public function testIdSetterWorksWithTableWithoutPkNamedAttribute()
 	{
 		$author = new Author(array('id' => 123));
-		$this->assertEquals(123,$author->authorId);
+		$this->assertEquals(123,$author->author_id);
 	}
 
 	public function testQuery()

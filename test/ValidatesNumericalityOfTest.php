@@ -31,7 +31,7 @@ class ValidatesNumericalityOfTest extends DatabaseTest
 	private function assertValidity($value, $boolean, $msg=null)
 	{
 		$book = new BookNumericality;
-		$book->numericTest = $value;
+		$book->numeric_test = $value;
 
 		if ($boolean == 'valid')
 		{

@@ -51,47 +51,47 @@ class ModelCallbackTest extends DatabaseTest
 
 	public function testAfterConstructFiresByDefault()
 	{
-		$this->assertFires('after_construct',function($model) { new Venue(); });
+		$this->assertFires('afterConstruct',function($model) { new Venue(); });
 	}
 
 	public function testFireValidationCallbacksOnInsert()
 	{
-		$this->assertFires(array('before_validation','after_validation','before_validation_on_create','after_validation_on_create'),
+		$this->assertFires(array('beforeValidation','afterValidation','beforeValidationOnCreate','afterValidationOnCreate'),
 			function($model) { $model = new Venue(); $model->save(); });
 	}
 
 	public function testFireValidationCallbacksOnUpdate()
 	{
-		$this->assertFires(array('before_validation','after_validation','before_validation_on_update','after_validation_on_update'),
+		$this->assertFires(array('beforeValidation','afterValidation','beforeValidationOnUpdate','afterValidationOnUpdate'),
 			function($model) { $model = Venue::first(); $model->save(); });
 	}
 
 	public function testValidationCallBacksNotFiredDueToBypassingValidations()
 	{
-		$this->assertDoesNotFire('before_validation',function($model) { $model->save(false); });
+		$this->assertDoesNotFire('beforeValidation',function($model) { $model->save(false); });
 	}
 
 	public function testBeforeValidationReturningFalseCancelsCallbacks()
 	{
-		$this->assertFiresReturnsFalse(array('before_validation','after_validation'),'before_validation',
+		$this->assertFiresReturnsFalse(array('beforeValidation','afterValidation'),'beforeValidation',
 			function($model) { $model->save(); });
 	}
 
 	public function testFiresBeforeSaveAndBeforeUpdateWhenUpdating()
 	{
-		$this->assertFires(array('before_save','before_update'),
+		$this->assertFires(array('beforeSave','beforeUpdate'),
 			function($model) { $model = Venue::first(); $model->name = "something new"; $model->save(); });
 	}
 
 	public function testBeforeSaveReturningFalseCancelsCallbacks()
 	{
-		$this->assertFiresReturnsFalse(array('before_save','before_create'),'before_save',
+		$this->assertFiresReturnsFalse(array('beforeSave','beforeCreate'),'beforeSave',
 			function($model) { $model = new Venue(); $model->save(); });
 	}
 
 	public function testDestroy()
 	{
-		$this->assertFires(array('before_destroy','after_destroy'),
+		$this->assertFires(array('beforeDestroy','afterDestroy'),
 			function($model) { $model->delete(); });
 	}
 }

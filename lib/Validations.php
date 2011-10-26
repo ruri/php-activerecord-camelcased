@@ -47,20 +47,20 @@ class Validations
 	private $record;
 
 	private static $VALIDATION_FUNCTIONS = array(
-		'validates_presence_of',
-		'validates_size_of',
-		'validates_length_of',
-		'validates_inclusion_of',
-		'validates_exclusion_of',
-		'validates_format_of',
-		'validates_numericality_of',
-		'validates_uniqueness_of'
+		'validatesPresenceOf',
+		'validatesSizeOf',
+		'validatesLengthOf',
+		'validatesInclusionOf',
+		'validatesExclusionOf',
+		'validatesFormatOf',
+		'validatesNumericalityOf',
+		'validatesUniquenessOf'
 	);
 
 	private static $DEFAULT_VALIDATION_OPTIONS = array(
 		'on' => 'save',
-		'allow_null' => false,
-		'allow_blank' => false,
+		'allowNull' => false,
+		'allowBlank' => false,
 		'message' => null,
 	);
 
@@ -73,11 +73,11 @@ class Validations
 	);
 
 	private static $ALL_NUMERICALITY_CHECKS = array(
-		'greater_than' => null,
-		'greater_than_or_equal_to'  => null,
-		'equal_to' => null,
-		'less_than' => null,
-		'less_than_or_equal_to' => null,
+		'greaterThan' => null,
+		'greaterThanOrEqualTo'  => null,
+		'equalTo' => null,
+		'lessThan' => null,
+		'lessThanOrEqualTo' => null,
 		'odd' => null,
 		'even' => null
 	);
@@ -166,8 +166,8 @@ class Validations
 	 *
 	 * <ul>
 	 * <li><b>message:</b> custom error message</li>
-	 * <li><b>allow_blank:</b> allow blank strings</li>
-	 * <li><b>allow_null:</b> allow null strings</li>
+	 * <li><b>allowBlank:</b> allow blank strings</li>
+	 * <li><b>allowNull:</b> allow null strings</li>
 	 * </ul>
 	 *
 	 * @param array $attrs Validation definition
@@ -199,8 +199,8 @@ class Validations
 	 * <ul>
 	 * <li><b>in/within:</b> attribute should/shouldn't be a value within an array</li>
 	 * <li><b>message:</b> custome error message</li>
-	 * <li><b>allow_blank:</b> allow blank strings</li>
-	 * <li><b>allow_null:</b> allow null strings</li>
+	 * <li><b>allowBlank:</b> allow blank strings</li>
+	 * <li><b>allowNull:</b> allow null strings</li>
 	 * </ul>
 	 *
 	 * @param array $attrs Validation definition
@@ -218,12 +218,12 @@ class Validations
 	 * <ul>
 	 * <li><b>in/within:</b> attribute should/shouldn't be a value within an array</li>
 	 * <li><b>message:</b> custome error message</li>
-	 * <li><b>allow_blank:</b> allow blank strings</li>
-	 * <li><b>allow_null:</b> allow null strings</li>
+	 * <li><b>allowBlank:</b> allow blank strings</li>
+	 * <li><b>allowNull:</b> allow null strings</li>
 	 * </ul>
 	 *
 	 * @param array $attrs Validation definition
-	 * @see validates_inclusion_of
+	 * @see validatesInclusionOf
 	 */
 	public function validatesExclusionOf($attrs)
 	{
@@ -238,12 +238,12 @@ class Validations
 	 * <ul>
 	 * <li><b>in/within:</b> attribute should/shouldn't be a value within an array</li>
 	 * <li><b>message:</b> custome error message</li>
-	 * <li><b>allow_blank:</b> allow blank strings</li>
-	 * <li><b>allow_null:</b> allow null strings</li>
+	 * <li><b>allowBlank:</b> allow blank strings</li>
+	 * <li><b>allowNull:</b> allow null strings</li>
 	 * </ul>
 	 *
-	 * @see validates_inclusion_of
-	 * @see validates_exclusion_of
+	 * @see validatesInclusionOf
+	 * @see validatesExclusionOf
 	 * @param string $type Either inclusion or exclusion
 	 * @param $attrs Validation definition
 	 */
@@ -289,23 +289,23 @@ class Validations
 	 * Available options:
 	 *
 	 * <ul>
-	 * <li><b>only_integer:</b> value must be an integer (e.g. not a float)</li>
+	 * <li><b>onlyInteger:</b> value must be an integer (e.g. not a float)</li>
 	 * <li><b>even:</b> must be even</li>
 	 * <li><b>odd:</b> must be odd"</li>
-	 * <li><b>greater_than:</b> must be greater than specified number</li>
-	 * <li><b>greater_than_or_equal_to:</b> must be greater than or equal to specified number</li>
-	 * <li><b>equal_to:</b> ...</li>
-	 * <li><b>less_than:</b> ...</li>
-	 * <li><b>less_than_or_equal_to:</b> ...</li>
-	 * <li><b>allow_blank:</b> allow blank strings</li>
-	 * <li><b>allow_null:</b> allow null strings</li>
+	 * <li><b>greaterThan:</b> must be greater than specified number</li>
+	 * <li><b>greaterThanOrEqualTo:</b> must be greater than or equal to specified number</li>
+	 * <li><b>equalTo:</b> ...</li>
+	 * <li><b>lessThan:</b> ...</li>
+	 * <li><b>lessThanOrEqualTo:</b> ...</li>
+	 * <li><b>allowBlank:</b> allow blank strings</li>
+	 * <li><b>allowNull:</b> allow null strings</li>
 	 * </ul>
 	 *
 	 * @param array $attrs Validation definition
 	 */
 	public function validatesNumericalityOf($attrs)
 	{
-		$configuration = array_merge(self::$DEFAULT_VALIDATION_OPTIONS, array('only_integer' => false));
+		$configuration = array_merge(self::$DEFAULT_VALIDATION_OPTIONS, array('onlyInteger' => false));
 
 		// Notice that for fixnum and float columns empty strings are converted to nil.
 		// Validates whether the value of the specified attribute is numeric by trying to convert it to a float with Kernel.Float
@@ -321,9 +321,9 @@ class Validations
 			if ($this->isNullWithOption($var, $options))
 				continue;
 
-			$notANumberMessage = (isset($options['message']) ? $options['message'] : Errors::$DEFAULT_ERROR_MESSAGES['not_a_number']);
+			$notANumberMessage = (isset($options['message']) ? $options['message'] : Errors::$DEFAULT_ERROR_MESSAGES['notANumber']);
 
-			if (true === $options['only_integer'] && !is_integer($var))
+			if (true === $options['onlyInteger'] && !is_integer($var))
 			{
 				if (!preg_match('/\A[+-]?\d+\Z/', (string)($var)))
 				{
@@ -356,19 +356,19 @@ class Validations
 
 					$message = str_replace('%d', $optionValue, $message);
 
-					if ('greater_than' == $option && !($var > $optionValue))
+					if ('greaterThan' == $option && !($var > $optionValue))
 						$this->record->add($attribute, $message);
 
-					elseif ('greater_than_or_equal_to' == $option && !($var >= $optionValue))
+					elseif ('greaterThanOrEqualTo' == $option && !($var >= $optionValue))
 						$this->record->add($attribute, $message);
 
-					elseif ('equal_to' == $option && !($var == $optionValue))
+					elseif ('equalTo' == $option && !($var == $optionValue))
 						$this->record->add($attribute, $message);
 
-					elseif ('less_than' == $option && !($var < $optionValue))
+					elseif ('lessThan' == $option && !($var < $optionValue))
 						$this->record->add($attribute, $message);
 
-					elseif ('less_than_or_equal_to' == $option && !($var <= $optionValue))
+					elseif ('lessThanOrEqualTo' == $option && !($var <= $optionValue))
 						$this->record->add($attribute, $message);
 				}
 				else
@@ -406,8 +406,8 @@ class Validations
 	 * <ul>
 	 * <li><b>with:</b> a regular expression</li>
 	 * <li><b>message:</b> custom error message</li>
-	 * <li><b>allow_blank:</b> allow blank strings</li>
-	 * <li><b>allow_null:</b> allow null strings</li>
+	 * <li><b>allowBlank:</b> allow blank strings</li>
+	 * <li><b>allowNull:</b> allow null strings</li>
 	 * </ul>
 	 *
 	 * @param array $attrs Validation definition
@@ -453,8 +453,8 @@ class Validations
 	 * <li><b>in/within:</b> attribute should be within an range array(min,max)</li>
 	 * <li><b>maximum/minimum:</b> attribute should not be above/below respectively</li>
 	 * <li><b>message:</b> custome error message</li>
-	 * <li><b>allow_blank:</b> allow blank strings</li>
-	 * <li><b>allow_null:</b> allow null strings. (Even if this is set to false, a null string is always shorter than a maximum value.)</li>
+	 * <li><b>allowBlank:</b> allow blank strings</li>
+	 * <li><b>allowNull:</b> allow null strings. (Even if this is set to false, a null string is always shorter than a maximum value.)</li>
 	 * </ul>
 	 *
 	 * @param array $attrs Validation definition
@@ -462,9 +462,9 @@ class Validations
 	public function validatesLengthOf($attrs)
 	{
 		$configuration = array_merge(self::$DEFAULT_VALIDATION_OPTIONS, array(
-			'too_long'     => Errors::$DEFAULT_ERROR_MESSAGES['too_long'],
-			'too_short'    => Errors::$DEFAULT_ERROR_MESSAGES['too_short'],
-			'wrong_length' => Errors::$DEFAULT_ERROR_MESSAGES['wrong_length']
+			'tooLong'     => Errors::$DEFAULT_ERROR_MESSAGES['tooLong'],
+			'tooShort'    => Errors::$DEFAULT_ERROR_MESSAGES['tooShort'],
+			'wrongLength' => Errors::$DEFAULT_ERROR_MESSAGES['wrongLength']
 		));
 
 		foreach ($attrs as $attr)
@@ -511,7 +511,7 @@ class Validations
 
 				if (!($rangeOption == 'maximum' && is_null($this->model->$attribute)))
 				{
-					$messageOptions = array('is' => 'wrong_length', 'minimum' => 'too_short', 'maximum' => 'too_long');
+					$messageOptions = array('is' => 'wrongLength', 'minimum' => 'tooShort', 'maximum' => 'tooLong');
 
 					if (isset($options['message']))
 						$message = $options['message'];
@@ -554,8 +554,8 @@ class Validations
 	 * <ul>
 	 * <li><b>with:</b> a regular expression</li>
 	 * <li><b>message:</b> custom error message</li>
-	 * <li><b>allow_blank:</b> allow blank strings</li>
-	 * <li><b>allow_null:</b> allow null strings</li>
+	 * <li><b>allowBlank:</b> allow blank strings</li>
+	 * <li><b>allowNull:</b> allow null strings</li>
 	 * </ul>
 	 *
 	 * @param array $attrs Validation definition
@@ -610,12 +610,12 @@ class Validations
 
 	private function isNullWithOption($var, &$options)
 	{
-		return (is_null($var) && (isset($options['allow_null']) && $options['allow_null']));
+		return (is_null($var) && (isset($options['allowNull']) && $options['allowNull']));
 	}
 
 	private function isBlankWithOption($var, &$options)
 	{
-		return (Utils::isBlank($var) && (isset($options['allow_blank']) && $options['allow_blank']));
+		return (Utils::isBlank($var) && (isset($options['allowBlank']) && $options['allowBlank']));
 	}
 }
 
@@ -637,19 +637,19 @@ class Errors implements IteratorAggregate
 		'accepted'     => "must be accepted",
 		'empty'        => "can't be empty",
 		'blank'        => "can't be blank",
-		'too_long'     => "is too long (maximum is %d characters)",
-		'too_short'    => "is too short (minimum is %d characters)",
-		'wrong_length' => "is the wrong length (should be %d characters)",
+		'tooLong'     => "is too long (maximum is %d characters)",
+		'tooShort'    => "is too short (minimum is %d characters)",
+		'wrongLength' => "is the wrong length (should be %d characters)",
 		'taken'        => "has already been taken",
-		'not_a_number' => "is not a number",
-		'greater_than' => "must be greater than %d",
-		'equal_to'     => "must be equal to %d",
-		'less_than'    => "must be less than %d",
+		'notANumber' => "is not a number",
+		'greaterThan' => "must be greater than %d",
+		'equalTo'     => "must be equal to %d",
+		'lessThan'    => "must be less than %d",
 		'odd'          => "must be odd",
 		'even'         => "must be even",
 		'unique'       => "must be unique",
-		'less_than_or_equal_to' => "must be less than or equal to %d",
-		'greater_than_or_equal_to' => "must be greater than or equal to %d"
+		'lessThanOrEqualTo' => "must be less than or equal to %d",
+		'greaterThanOrEqualTo' => "must be greater than or equal to %d"
 	);
 
 	/**

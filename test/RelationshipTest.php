@@ -7,7 +7,7 @@ class AuthorWithNonModelRelationship extends ActiveRecord\Model
 {
 	static $pk = 'id';
 	static $tableName = 'authors';
-	static $hasMany = array(array('books', 'class_name' => 'NotModel'));
+	static $hasMany = array(array('books', 'className' => 'NotModel'));
 }
 
 class RelationshipTest extends DatabaseTest
@@ -27,8 +27,8 @@ class RelationshipTest extends DatabaseTest
 
 		foreach ($this->relationshipNames as $name)
 		{
-			if (preg_match("/$name/", $this->getName(), $match))
-				$this->relationshipName = $match[0];
+			if (preg_match("/$name/i", $this->getName()))
+				$this->relationshipName = $name;
 		}
 	}
 
@@ -51,7 +51,7 @@ class RelationshipTest extends DatabaseTest
 				$ret = Venue::find(2);
 				break;
 		}
-
+		
 		return $ret;
 	}
 
@@ -117,18 +117,18 @@ class RelationshipTest extends DatabaseTest
 
 	public function testBelongsToWithExplicitClassName()
 	{
-		Event::$belongsTo = array(array('explicit_class_name', 'class_name' => 'Venue'));
+		Event::$belongsTo = array(array('explicit_class_name', 'className' => 'Venue'));
 		$this->assertDefaultBelongsTo($this->getRelationship(), 'explicit_class_name');
 	}
 
 	public function testBelongsToWithExplicitForeignKey()
 	{
 		$old = Book::$belongsTo;
-		Book::$belongsTo = array(array('explicit_author', 'class_name' => 'Author', 'foreign_key' => 'secondary_author_id'));
+		Book::$belongsTo = array(array('explicit_author', 'className' => 'Author', 'foreignKey' => 'secondary_author_id'));
 
 		$book = Book::find(1);
-		$this->assertEquals(2, $book->secondaryAuthorId);
-		$this->assertEquals($book->secondaryAuthorId, $book->explicitAuthor->authorId);
+		$this->assertEquals(2, $book->secondary_author_id);
+		$this->assertEquals($book->secondary_author_id, $book->explicit_author->author_id);
 
 		Book::$belongsTo = $old;
 	}
@@ -165,7 +165,7 @@ class RelationshipTest extends DatabaseTest
 
 	public function testBelongsToWithPluralAttributeName()
 	{
-		Event::$belongsTo = array(array('venues', 'class_name' => 'Venue'));
+		Event::$belongsTo = array(array('venues', 'className' => 'Venue'));
 		$this->assertDefaultBelongsTo($this->getRelationship(), 'venues');
 	}
 
@@ -194,8 +194,8 @@ class RelationshipTest extends DatabaseTest
 	public function testHasManyBuildAssociation()
 	{
 		$author = Author::first();
-		$this->assertEquals($author->id, $author->buildBooks()->authorId);
-		$this->assertEquals($author->id, $author->buildBook()->authorId);
+		$this->assertEquals($author->id, $author->buildBooks()->author_id);
+		$this->assertEquals($author->id, $author->buildBook()->author_id);
 	}
 
 	public function testBelongsToCreateAssociation()
@@ -208,10 +208,10 @@ class RelationshipTest extends DatabaseTest
 
 	public function testBelongsToCanBeSelfReferential()
 	{
-		Author::$belongsTo = array(array('parent_author', 'class_name' => 'Author', 'foreign_key' => 'parent_author_id'));
+		Author::$belongsTo = array(array('parent_author', 'className' => 'Author', 'foreignKey' => 'parent_author_id'));
 		$author = Author::find(1);
 		$this->assertEquals(1, $author->id);
-		$this->assertEquals(3, $author->parentAuthor->id);
+		$this->assertEquals(3, $author->parent_author->id);
 	}
 
 	public function testBelongsToWithAnInvalidOption()
@@ -223,7 +223,7 @@ class RelationshipTest extends DatabaseTest
 
 	public function testHasManyWithExplicitClassName()
 	{
-		Venue::$hasMany = array(array('explicit_class_name', 'class_name' => 'Event', 'order' => 'id asc'));;
+		Venue::$hasMany = array(array('explicit_class_name', 'className' => 'Event', 'order' => 'id asc'));;
 		$this->assertDefaultHasMany($this->getRelationship(), 'explicit_class_name');
 	}
 
@@ -259,7 +259,7 @@ class RelationshipTest extends DatabaseTest
 
 	public function testHasManyWithSingularAttributeName()
 	{
-		Venue::$hasMany = array(array('event', 'class_name' => 'Event', 'order' => 'id asc'));
+		Venue::$hasMany = array(array('event', 'className' => 'Event', 'order' => 'id asc'));
 		$this->assertDefaultHasMany($this->getRelationship(), 'event');
 	}
 
@@ -301,8 +301,8 @@ class RelationshipTest extends DatabaseTest
 	{
 		$property = Property::first();
 
-		$this->assertEquals(1, $property->amenities[0]->amenityId);
-		$this->assertEquals(2, $property->amenities[1]->amenityId);
+		$this->assertEquals(1, $property->amenities[0]->amenity_id);
+		$this->assertEquals(2, $property->amenities[1]->amenity_id);
 	}
 
 	public function testGh16HasManyThroughInsideALoopShouldNotCauseAnException()
@@ -378,11 +378,11 @@ class RelationshipTest extends DatabaseTest
 	public function testHasManyWithExplicitKeys()
 	{
 		$old = Author::$hasMany;
-		Author::$hasMany = array(array('explicit_books', 'class_name' => 'Book', 'primary_key' => 'parent_author_id', 'foreign_key' => 'secondary_author_id'));
+		Author::$hasMany = array(array('explicit_books', 'className' => 'Book', 'primaryKey' => 'parent_author_id', 'foreignKey' => 'secondary_author_id'));
 		$author = Author::find(4);
 
-		foreach ($author->explicitBooks as $book)
-			$this->assertEquals($book->secondaryAuthorId, $author->parentAuthorId);
+		foreach ($author->explicit_books as $book)
+			$this->assertEquals($book->secondary_author_id, $author->parent_author_id);
 
 		$this->assertTrue(strpos(ActiveRecord\Table::load('Book')->lastSql, "secondary_author_id") !== false);
 		Author::$hasMany = $old;
@@ -395,7 +395,7 @@ class RelationshipTest extends DatabaseTest
 
 	public function testHasOneWithExplicitClassName()
 	{
-		Employee::$hasOne = array(array('explicit_class_name', 'class_name' => 'Position'));
+		Employee::$hasOne = array(array('explicit_class_name', 'className' => 'Position'));
 		$this->assertDefaultHasOne($this->getRelationship(), 'explicit_class_name');
 	}
 
@@ -453,10 +453,10 @@ class RelationshipTest extends DatabaseTest
 
 	public function testHasOneCanBeSelfReferential()
 	{
-		Author::$hasOne[1] = array('parent_author', 'class_name' => 'Author', 'foreign_key' => 'parent_author_id');
+		Author::$hasOne[1] = array('parent_author', 'className' => 'Author', 'foreignKey' => 'parent_author_id');
 		$author = Author::find(1);
 		$this->assertEquals(1, $author->id);
-		$this->assertEquals(3, $author->parentAuthor->id);
+		$this->assertEquals(3, $author->parent_author->id);
 	}
 
 	public function testHasOneWithJoins()
@@ -467,10 +467,10 @@ class RelationshipTest extends DatabaseTest
 
 	public function testHasOneWithExplicitKeys()
 	{
-		Book::$hasOne = array(array('explicit_author', 'class_name' => 'Author', 'foreign_key' => 'parent_author_id', 'primary_key' => 'secondary_author_id'));
+		Book::$hasOne = array(array('explicit_author', 'className' => 'Author', 'foreignKey' => 'parent_author_id', 'primaryKey' => 'secondary_author_id'));
 
 		$book = Book::find(1);
-		$this->assertEquals($book->secondaryAuthorId, $book->explicitAuthor->parentAuthorId);
+		$this->assertEquals($book->secondary_author_id, $book->explicit_author->parent_author_id);
 		$this->assertTrue(strpos(ActiveRecord\Table::load('Author')->lastSql, "parent_author_id") !== false);
 	}
 
@@ -483,7 +483,7 @@ class RelationshipTest extends DatabaseTest
 
 	public function testRelationshipOnTableWithUnderscores()
 	{
-		$this->assertEquals(1,Author::find(1)->awesomePerson->isAwesome);
+		$this->assertEquals(1,Author::find(1)->awesome_person->is_awesome);
 	}
 
 	public function testHasOneThrough()
@@ -503,7 +503,7 @@ class RelationshipTest extends DatabaseTest
 
 	public function testGh93AndGh100EagerLoadingRespectsAssociationOptions()
 	{
-		Venue::$hasMany = array(array('events', 'class_name' => 'Event', 'order' => 'id asc', 'conditions' => array('length(title) = ?', 14)));
+		Venue::$hasMany = array(array('events', 'className' => 'Event', 'order' => 'id asc', 'conditions' => array('length(title) = ?', 14)));
 		$venues = Venue::find(array(2, 6), array('include' => 'events'));
 
 		$this->assertSqlHas("WHERE length(title) = ? AND venue_id IN(?,?) ORDER BY id asc",ActiveRecord\Table::load('Event')->lastSql);
@@ -516,7 +516,7 @@ class RelationshipTest extends DatabaseTest
 		$this->assertSqlHas("WHERE venue_id IN(?,?)",ActiveRecord\Table::load('Event')->lastSql);
 
 		foreach ($venues[0]->events as $event)
-			$this->assertEquals($event->venueId, $venues[0]->id);
+			$this->assertEquals($event->venue_id, $venues[0]->id);
 
 		$this->assertEquals(2, count($venues[0]->events));
 	}
@@ -544,7 +544,7 @@ class RelationshipTest extends DatabaseTest
 			$this->assertType('array', $authors[0]->$assoc);
 
 			foreach ($authors[0]->$assoc as $a)
-				$this->assertEquals($authors[0]->authorId,$a->authorId);
+				$this->assertEquals($authors[0]->author_id,$a->author_id);
 		}
 
 		foreach ($assocs as $assoc)
@@ -570,8 +570,8 @@ class RelationshipTest extends DatabaseTest
 
 			foreach ($v->events as $e)
 			{
-				$this->assertEquals($e->hostId, $e->host->id);
-				$this->assertEquals($v->id, $e->venueId);
+				$this->assertEquals($e->host_id, $e->host->id);
+				$this->assertEquals($v->id, $e->venue_id);
 			}
 		}
 
@@ -585,7 +585,7 @@ class RelationshipTest extends DatabaseTest
 		$events = Event::find(array(1,2,3,5,7), array('include' => 'venue'));
 
 		foreach ($events as $event)
-			$this->assertEquals($event->venueId, $event->venue->id);
+			$this->assertEquals($event->venue_id, $event->venue->id);
 
 		$this->assertSqlHas("WHERE id IN(?,?,?,?,?)",ActiveRecord\Table::load('Venue')->lastSql);
 	}
@@ -596,8 +596,8 @@ class RelationshipTest extends DatabaseTest
 
 		foreach ($events as $event)
 		{
-			$this->assertEquals($event->venueId, $event->venue->id);
-			$this->assertEquals($event->hostId, $event->host->id);
+			$this->assertEquals($event->venue_id, $event->venue->id);
+			$this->assertEquals($event->host_id, $event->host->id);
 		}
 
 		$this->assertSqlHas("WHERE id IN(?,?,?,?,?)",ActiveRecord\Table::load('Event')->lastSql);
@@ -615,8 +615,8 @@ class RelationshipTest extends DatabaseTest
 
 		foreach ($books as $book)
 		{
-			$this->assertEquals($book->authorId,$book->author->authorId);
-			$this->assertEquals($book->author->authorId,$book->author->awesomePeople[0]->authorId);
+			$this->assertEquals($book->author_id,$book->author->author_id);
+			$this->assertEquals($book->author->author_id,$book->author->awesome_people[0]->author_id);
 		}
 
 		$this->assertSqlHas("WHERE book_id IN(?,?)",ActiveRecord\Table::load('Book')->lastSql);
@@ -667,9 +667,9 @@ class RelationshipTest extends DatabaseTest
 	{
 		$old = Book::$belongsTo;
 		Book::$belongsTo = array(
-			array('from_', 'class_name' => 'Author', 'foreign_key' => 'author_id'),
-			array('to', 'class_name' => 'Author', 'foreign_key' => 'secondary_author_id'),
-			array('another', 'class_name' => 'Author', 'foreign_key' => 'secondary_author_id')
+			array('from_', 'className' => 'Author', 'foreignKey' => 'author_id'),
+			array('to', 'className' => 'Author', 'foreignKey' => 'secondary_author_id'),
+			array('another', 'className' => 'Author', 'foreignKey' => 'secondary_author_id')
 		);
 
 		$c = ActiveRecord\Table::load('Book')->conn;
@@ -678,9 +678,9 @@ class RelationshipTest extends DatabaseTest
 		$book = Book::find(2, array('joins' => array('to', 'from_', 'another'),
 			'select' => $select));
 
-		$this->assertNotNull($book->fromAuthorName);
-		$this->assertNotNull($book->toAuthorName);
-		$this->assertNotNull($book->anotherAuthorName);
+		$this->assertNotNull($book->from_author_name);
+		$this->assertNotNull($book->to_author_name);
+		$this->assertNotNull($book->another_author_name);
 		Book::$belongsTo = $old;
 	}
 

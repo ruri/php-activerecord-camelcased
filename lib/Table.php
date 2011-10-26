@@ -86,8 +86,8 @@ class Table
 		$this->setSettersAndGetters();
 
 		$this->callback = new CallBack($className);
-		$this->callback->register('before_save', function(Model $model) { $model->setTimestamps(); }, array('prepend' => true));
-		$this->callback->register('after_save', function(Model $model) { $model->resetDirty(); }, array('prepend' => true));
+		$this->callback->register('beforeSave', function(Model $model) { $model->setTimestamps(); }, array('prepend' => true));
+		$this->callback->register('afterSave', function(Model $model) { $model->resetDirty(); }, array('prepend' => true));
 	}
 
 	public function reestablishConnection($close=true)
@@ -413,7 +413,7 @@ class Table
 
 	private function setPrimaryKey()
 	{
-		if (($pk = $this->class->getStaticPropertyValue('pk',null)) || ($pk = $this->class->getStaticPropertyValue('primary_key',null)))
+		if (($pk = $this->class->getStaticPropertyValue('pk',null)) || ($pk = $this->class->getStaticPropertyValue('primaryKey',null)))
 			$this->pk = is_array($pk) ? $pk : array($pk);
 		else
 		{
@@ -429,7 +429,7 @@ class Table
 
 	private function setTableName()
 	{
-		if (($table = $this->class->getStaticPropertyValue('table',null)) || ($table = $this->class->getStaticPropertyValue('table_name',null)))
+		if (($table = $this->class->getStaticPropertyValue('table',null)) || ($table = $this->class->getStaticPropertyValue('tableName',null)))
 			$this->table = $table;
 		else
 		{
@@ -441,7 +441,7 @@ class Table
 			$this->table = $parts[count($parts)-1];
 		}
 
-		if(($db = $this->class->getStaticPropertyValue('db',null)) || ($db = $this->class->getStaticPropertyValue('db_name',null)))
+		if(($db = $this->class->getStaticPropertyValue('db',null)) || ($db = $this->class->getStaticPropertyValue('dbName',null)))
 			$this->dbName = $db;
 	}
 

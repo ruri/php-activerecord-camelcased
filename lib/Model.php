@@ -28,11 +28,11 @@ namespace ActiveRecord;
  * <code>
  * class Person extends ActiveRecord\Model {
  *   static $belongsTo = array(
- *     array('parent', 'foreign_key' => 'parent_id', 'class_name' => 'Person')
+ *     array('parent', 'foreignKey' => 'parent_id', 'className' => 'Person')
  *   );
  *
  *   static $hasMany = array(
- *     array('children', 'foreign_key' => 'parent_id', 'class_name' => 'Person'),
+ *     array('children', 'foreignKey' => 'parent_id', 'className' => 'Person'),
  *     array('orders')
  *   );
  *
@@ -223,7 +223,7 @@ class Model
 	 * <code>
 	 * $person->state     # same as calling $person->venue->state
 	 * $person->name      # same as calling $person->venue->name
-	 * $person->wootName # same as calling $person->host->name
+	 * $person->woot_name # same as calling $person->host->name
 	 * </code>
 	 *
 	 * @var array
@@ -265,7 +265,7 @@ class Model
 		if ($instantiatingViaFind)
 			$this->__dirty = array();
 
-		$this->invokeCallback('after_construct',false);
+		$this->invokeCallback('afterConstruct',false);
 	}
 
 	/**
@@ -323,10 +323,13 @@ class Model
 	public function &__get($name)
 	{
 		// check for getter
-		if (method_exists($this, "get_$name"))
+		
+		// TODO: Rewrite this slow code.
+		$method = 'get' . Inflector::instance()->camelize($name);
+		
+		if (method_exists($this, $method))
 		{
-			$name = "get_$name";
-			$value = $this->$name();
+			$value = $this->$method(); // Note: this is required as the value is returned by reference.
 			return $value;
 		}
 
@@ -356,7 +359,7 @@ class Model
 	 *   # define custom setter methods. Note you must
 	 *   # prepend set_ to your method name:
 	 *   function setPassword($plaintext) {
-	 *     $this->encryptedPassword = md5($plaintext);
+	 *     $this->encrypted_password = md5($plaintext);
 	 *   }
 	 * }
 	 *
@@ -399,10 +402,13 @@ class Model
 		if (array_key_exists($name, static::$aliasAttribute))
 			$name = static::$aliasAttribute[$name];
 
-		elseif (method_exists($this,"set_$name"))
+		else
 		{
-			$name = "set_$name";
-			return $this->$name($value);
+			// TODO: Rewrite this slow code.
+			$method = 'set' . Inflector::instance()->camelize($name);
+			
+			if (method_exists($this, $method))
+				return $this->$method($value);
 		}
 
 		if (array_key_exists($name,$this->attributes))
@@ -781,7 +787,7 @@ class Model
 	{
 		$this->verifyNotReadonly('insert');
 
-		if (($validate && !$this->_validate() || !$this->invokeCallback('before_create',false)))
+		if (($validate && !$this->_validate() || !$this->invokeCallback('beforeCreate',false)))
 			return false;
 
 		$table = static::table();
@@ -824,7 +830,7 @@ class Model
 				$this->attributes[$pk] = static::connection()->insertId($table->sequence);
 		}
 
-		$this->invokeCallback('after_create',false);
+		$this->invokeCallback('afterCreate',false);
 		$this->__newRecord = false;
 		return true;
 	}
@@ -850,12 +856,12 @@ class Model
 			if (empty($pk))
 				throw new ActiveRecordException("Cannot update, no primary key defined for: " . get_called_class());
 
-			if (!$this->invokeCallback('before_update',false))
+			if (!$this->invokeCallback('beforeUpdate',false))
 				return false;
 
 			$dirty = $this->dirtyAttributes();
 			static::table()->update($dirty,$pk);
-			$this->invokeCallback('after_update',false);
+			$this->invokeCallback('afterUpdate',false);
 		}
 
 		return true;
@@ -990,11 +996,11 @@ class Model
 		if (empty($pk))
 			throw new ActiveRecordException("Cannot delete, no primary key defined for: " . get_called_class());
 
-		if (!$this->invokeCallback('before_destroy',false))
+		if (!$this->invokeCallback('beforeDestroy',false))
 			return false;
 
 		static::table()->delete($pk);
-		$this->invokeCallback('after_destroy',false);
+		$this->invokeCallback('afterDestroy',false);
 
 		return true;
 	}
@@ -1035,9 +1041,9 @@ class Model
 		require_once 'Validations.php';
 
 		$validator = new Validations($this);
-		$validationOn = 'validation_on_' . ($this->isNewRecord() ? 'create' : 'update');
+		$validationOn = 'ValidationOn' . ($this->isNewRecord() ? 'Create' : 'Update');
 
-		foreach (array('before_validation', "before_$validationOn") as $callback)
+		foreach (array('beforeValidation', "before$validationOn") as $callback)
 		{
 			if (!$this->invokeCallback($callback,false))
 				return false;
@@ -1047,7 +1053,7 @@ class Model
 		$this->errors = $validator->getRecord();
 		$validator->validate();
 
-		foreach (array('after_validation', "after_$validationOn") as $callback)
+		foreach (array('afterValidation', "after$validationOn") as $callback)
 			$this->invokeCallback($callback,false);
 
 		if (!$this->errors->isEmpty())
@@ -1095,11 +1101,11 @@ class Model
 	{
 		$now = date('Y-m-d H:i:s');
 
-		if (isset($this->updatedAt))
-			$this->updatedAt = $now;
+		if (isset($this->updated_at))
+			$this->updated_at = $now;
 
-		if (isset($this->createdAt) && $this->isNewRecord())
-			$this->createdAt = $now;
+		if (isset($this->created_at) && $this->isNewRecord())
+			$this->created_at = $now;
 	}
 
 	/**

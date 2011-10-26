@@ -77,7 +77,7 @@ class ActiveRecordFindTest extends DatabaseTest
 	public function testFindAllWithNoBindValues()
 	{
 		$authors = Author::find('all',array('conditions' => array('author_id IN(1,2,3)')));
-		$this->assertEquals(1,$authors[0]->authorId);
+		$this->assertEquals(1,$authors[0]->author_id);
 	}
 
 	public function testFindHashUsingAlias()
@@ -124,7 +124,7 @@ class ActiveRecordFindTest extends DatabaseTest
 	public function testFindFirst()
 	{
 		$author = Author::find('first',array('conditions' => array('author_id IN(?)', array(1,2,3))));
-		$this->assertEquals(1,$author->authorId);
+		$this->assertEquals(1,$author->author_id);
 		$this->assertEquals('Tito',$author->name);
 	}
 
@@ -136,13 +136,13 @@ class ActiveRecordFindTest extends DatabaseTest
 	public function testFindFirstUsingPk()
 	{
 		$author = Author::find('first',3);
-		$this->assertEquals(3,$author->authorId);
+		$this->assertEquals(3,$author->author_id);
 	}
 
 	public function testFindFirstWithConditionsAsString()
 	{
 		$author = Author::find('first',array('conditions' => 'author_id=3'));
-		$this->assertEquals(3,$author->authorId);
+		$this->assertEquals(3,$author->author_id);
 	}
 
 	public function testFindAllWithConditionsAsString()
@@ -154,7 +154,7 @@ class ActiveRecordFindTest extends DatabaseTest
 	public function testFindBySql()
 	{
 		$author = Author::findBySql("SELECT * FROM authors WHERE author_id in(1,2)");
-		$this->assertEquals(1,$author[0]->authorId);
+		$this->assertEquals(1,$author[0]->author_id);
 		$this->assertEquals(2,count($author));
 	}
 
@@ -167,28 +167,28 @@ class ActiveRecordFindTest extends DatabaseTest
 	public function testFindWithConditions()
 	{
 		$author = Author::find(array('conditions' => array('author_id=? and name=?', 1, 'Tito')));
-		$this->assertEquals(1,$author->authorId);
+		$this->assertEquals(1,$author->author_id);
 	}
 
 	public function testFindLast()
 	{
 		$author = Author::last();
-		$this->assertEquals(4, $author->authorId);
+		$this->assertEquals(4, $author->author_id);
 		$this->assertEquals('Uncle Bob',$author->name);
 	}
 
 	public function testFindLastUsingStringCondition()
 	{
 		$author = Author::find('last', array('conditions' => 'author_id IN(1,2,3,4)'));
-		$this->assertEquals(4, $author->authorId);
+		$this->assertEquals(4, $author->author_id);
 		$this->assertEquals('Uncle Bob',$author->name);
 	}
 
 	public function testLimitBeforeOrder()
 	{
 		$authors = Author::all(array('limit' => 2, 'order' => 'author_id desc', 'conditions' => 'author_id in(1,2)'));
-		$this->assertEquals(2,$authors[0]->authorId);
-		$this->assertEquals(1,$authors[1]->authorId);
+		$this->assertEquals(2,$authors[0]->author_id);
+		$this->assertEquals(1,$authors[1]->author_id);
 	}
 
 	public function testForEach()
@@ -366,7 +366,7 @@ class ActiveRecordFindTest extends DatabaseTest
 	{
 		$author = Author::find('first', array('from' => 'books', 'order' => 'author_id asc'));
 		$this->assertTrue($author instanceof Author);
-		$this->assertNotNull($author->bookId);
+		$this->assertNotNull($author->book_id);
 
 		$author = Author::find('first', array('from' => 'authors', 'order' => 'author_id asc'));
 		$this->assertTrue($author instanceof Author);
@@ -417,8 +417,8 @@ class ActiveRecordFindTest extends DatabaseTest
 	public function testFindOrCreateByCreatesNewRecord()
 	{
 		$author = Author::findOrCreateByNameAndEncryptedPassword('New Guy','pencil');
-		$this->assertTrue($author->authorId > 0);
-		$this->assertEquals('pencil',$author->encryptedPassword);
+		$this->assertTrue($author->author_id > 0);
+		$this->assertEquals('pencil',$author->encrypted_password);
 	}
 
 	/**

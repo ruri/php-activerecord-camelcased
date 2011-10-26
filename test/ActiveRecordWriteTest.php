@@ -5,7 +5,7 @@ use ActiveRecord\DateTime;
 class DirtyAuthor extends ActiveRecord\Model
 {
 	static $table = 'authors';
-	static $beforeSave = 'before_save';
+	static $beforeSave = 'beforeSave';
 
 	public function beforeSave()
 	{
@@ -66,6 +66,8 @@ class ActiveRecordWriteTest extends DatabaseTest
 	{
 		$author = new Author(array('name' => 'Blah Blah'));
 		$author->save();
+		var_dump($author->connection()->lastQuery);
+		var_dump($author->connection()->quoteName('updated_at'));
 		$this->assertTrue(strpos($author->connection()->lastQuery,$author->connection()->quoteName('updated_at')) !== false);
 	}
 
@@ -245,26 +247,26 @@ class ActiveRecordWriteTest extends DatabaseTest
 	{
 		$author = new Author;
 		$author->save();
-		$this->assertNotNull($author->createdAt, $author->updatedAt);
+		$this->assertNotNull($author->created_at, $author->updated_at);
 
 		$author->reload();
-		$this->assertNotNull($author->createdAt, $author->updatedAt);
+		$this->assertNotNull($author->created_at, $author->updated_at);
 	}
 
 	public function testTimestampsUpdatedAtOnlySetBeforeUpdate()
 	{
 		$author = new Author();
 		$author->save();
-		$createdAt = $author->createdAt;
-		$updatedAt = $author->updatedAt;
+		$createdAt = $author->created_at;
+		$updatedAt = $author->updated_at;
 		sleep(1);
 
 		$author->name = 'test';
 		$author->save();
 
-		$this->assertNotNull($author->updatedAt);
-		$this->assertSame($createdAt, $author->createdAt);
-		$this->assertNotEquals($updatedAt, $author->updatedAt);
+		$this->assertNotNull($author->updated_at);
+		$this->assertSame($createdAt, $author->created_at);
+		$this->assertNotEquals($updatedAt, $author->updated_at);
 	}
 
 	public function testCreate()
@@ -276,7 +278,7 @@ class ActiveRecordWriteTest extends DatabaseTest
 	public function testCreateShouldSetCreatedAt()
 	{
 		$author = Author::create(array('name' => 'Blah Blah'));
-		$this->assertNotNull($author->createdAt);
+		$this->assertNotNull($author->created_at);
 	}
 
 	/**
@@ -303,7 +305,7 @@ class ActiveRecordWriteTest extends DatabaseTest
 	public function testInsertingWithExplicitPk()
 	{
 		$author = Author::create(array('author_id' => 9999, 'name' => 'blah'));
-		$this->assertEquals(9999,$author->authorId);
+		$this->assertEquals(9999,$author->author_id);
 	}
 
 	/**
@@ -318,7 +320,7 @@ class ActiveRecordWriteTest extends DatabaseTest
 	public function testModifiedAttributesInBeforeHandlersGetSaved()
 	{
 		$author = DirtyAuthor::first();
-		$author->encryptedPassword = 'coco';
+		$author->encrypted_password = 'coco';
 		$author->save();
 		$this->assertEquals('i saved',DirtyAuthor::find($author->id)->name);
 	}
@@ -336,7 +338,7 @@ class ActiveRecordWriteTest extends DatabaseTest
 	{
 		$author = Author::create(array('some_date' => new DateTime()));
 		$author = Author::find($author->id);
-		$author->someDate->setDate(2010,1,1);
+		$author->some_date->setDate(2010,1,1);
 		$this->assertHasKeys('some_date', $author->dirtyAttributes());
 	}
 
@@ -344,7 +346,7 @@ class ActiveRecordWriteTest extends DatabaseTest
 	{
 		$author = Author::create(array('some_date' => new \DateTime()));
 		$author = Author::find($author->id);
-		$author->someDate->setDate(2010,1,1);
+		$author->some_date->setDate(2010,1,1);
 		$this->assertHasKeys('some_date', $author->dirtyAttributes());
 	}
 

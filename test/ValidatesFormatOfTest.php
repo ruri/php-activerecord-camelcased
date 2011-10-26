@@ -62,7 +62,7 @@ class ValidatesFormatOfTest extends DatabaseTest
 		BookFormat::$validatesFormatOf[0]['allow_null'] = true;
 		BookFormat::$validatesFormatOf[0]['with'] = '/[^0-9]/';
 		$book = new BookFormat();
-		$book->authorId = 1;
+		$book->author_id = 1;
 		$book->name = null;
 		$book->save();
 		$this->assertFalse($book->errors->isInvalid('name'));

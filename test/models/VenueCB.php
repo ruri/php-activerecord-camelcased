@@ -6,8 +6,8 @@ class VenueCB extends ActiveRecord\Model
 	static $beforeUpdate;
 	static $beforeCreate;
 	static $beforeValidation;
-	static $beforeDestroy = 'before_destroy_using_string';
-	static $afterDestroy = array('after_destroy_one', 'after_destroy_two');
+	static $beforeDestroy = 'beforeDestroyUsingString';
+	static $afterDestroy = array('afterDestroyOne', 'afterDestroyTwo');
 	static $afterCreate;
 
 	// DO NOT add a static $afterConstruct for this. we are testing

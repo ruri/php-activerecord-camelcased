@@ -4,8 +4,8 @@ namespace foo\bar\biz;
 
 class User extends \ActiveRecord\Model {
 	static $hasMany = array(
-		array('user_newsletters', 'class_name' => '\foo\bar\biz\UserNewsletter'),
-		array('newsletters', 'class_name' => '\foo\bar\biz\Newsletter',
+		array('user_newsletters', 'className' => '\foo\bar\biz\UserNewsletter'),
+		array('newsletters', 'className' => '\foo\bar\biz\Newsletter',
 		      'through' => 'user_newsletters')
 	);
 
@@ -13,16 +13,16 @@ class User extends \ActiveRecord\Model {
 
 class Newsletter extends \ActiveRecord\Model {
 	static $hasMany = array(
-		array('user_newsletters', 'class_name' => '\foo\bar\biz\UserNewsletter'),
-		array('users', 'class_name' => '\foo\bar\biz\User',
+		array('user_newsletters', 'className' => '\foo\bar\biz\UserNewsletter'),
+		array('users', 'className' => '\foo\bar\biz\User',
 		      'through' => 'user_newsletters')
 	);
 }
 
 class UserNewsletter extends \ActiveRecord\Model {
 	static $belongTo = array(
-		array('user', 'class_name' => '\foo\bar\biz\User'),
-		array('newsletter', 'class_name' => '\foo\bar\biz\Newsletter'),
+		array('user', 'className' => '\foo\bar\biz\User'),
+		array('newsletter', 'className' => '\foo\bar\biz\Newsletter'),
 	);
 }
 

@@ -13,21 +13,21 @@ use Closure;
  *
  * Valid callbacks are:
  * <ul>
- * <li><b>after_construct:</b> called after a model has been constructed</li>
- * <li><b>before_save:</b> called before a model is saved</li>
- * <li><b>after_save:</b> called after a model is saved</li>
- * <li><b>before_create:</b> called before a NEW model is to be inserted into the database</li>
- * <li><b>after_create:</b> called after a NEW model has been inserted into the database</li>
- * <li><b>before_update:</b> called before an existing model has been saved</li>
- * <li><b>after_update:</b> called after an existing model has been saved</li>
- * <li><b>before_validation:</b> called before running validators</li>
- * <li><b>after_validation:</b> called after running validators</li>
- * <li><b>before_validation_on_create:</b> called before validation on a NEW model being inserted</li>
- * <li><b>after_validation_on_create:</b> called after validation on a NEW model being inserted</li>
- * <li><b>before_validation_on_update:</b> see above except for an existing model being saved</li>
- * <li><b>after_validation_on_update:</b> ...</li>
- * <li><b>before_destroy:</b> called after a model has been deleted</li>
- * <li><b>after_destroy:</b> called after a model has been deleted</li>
+ * <li><b>afterConstruct:</b> called after a model has been constructed</li>
+ * <li><b>beforeSave:</b> called before a model is saved</li>
+ * <li><b>afterSave:</b> called after a model is saved</li>
+ * <li><b>beforeCreate:</b> called before a NEW model is to be inserted into the database</li>
+ * <li><b>afterCreate:</b> called after a NEW model has been inserted into the database</li>
+ * <li><b>beforeUpdate:</b> called before an existing model has been saved</li>
+ * <li><b>afterUpdate:</b> called after an existing model has been saved</li>
+ * <li><b>beforeValidation:</b> called before running validators</li>
+ * <li><b>afterValidation:</b> called after running validators</li>
+ * <li><b>beforeValidationOnCreate:</b> called before validation on a NEW model being inserted</li>
+ * <li><b>afterValidationOnCreate:</b> called after validation on a NEW model being inserted</li>
+ * <li><b>beforeValidationOnUpdate:</b> see above except for an existing model being saved</li>
+ * <li><b>afterValidationOnUpdate:</b> ...</li>
+ * <li><b>beforeDestroy:</b> called after a model has been deleted</li>
+ * <li><b>afterDestroy:</b> called after a model has been deleted</li>
  * </ul>
  *
  * This class isn't meant to be used directly. Callbacks are defined on your model like the example below:
@@ -64,21 +64,21 @@ class CallBack
 	 * @var array
 	 */
 	static protected $VALID_CALLBACKS = array(
-		'after_construct',
-		'before_save',
-		'after_save',
-		'before_create',
-		'after_create',
-		'before_update',
-		'after_update',
-		'before_validation',
-		'after_validation',
-		'before_validation_on_create',
-		'after_validation_on_create',
-		'before_validation_on_update',
-		'after_validation_on_update',
-		'before_destroy',
-		'after_destroy'
+		'afterConstruct',
+		'beforeSave',
+		'afterSave',
+		'beforeCreate',
+		'afterCreate',
+		'beforeUpdate',
+		'afterUpdate',
+		'beforeValidation',
+		'afterValidation',
+		'beforeValidationOnCreate',
+		'afterValidationOnCreate',
+		'beforeValidationOnUpdate',
+		'afterValidationOnUpdate',
+		'beforeDestroy',
+		'afterDestroy'
 	);
 
 	/**
@@ -153,7 +153,7 @@ class CallBack
 	 * @param string $name Name of the callback to invoke
 	 * @param boolean $mustExist Set to true to raise an exception if the callback does not exist.
 	 * @return mixed null if $name was not a valid callback type or false if a method was invoked
-	 * that was for a before_* callback and that method returned false. If this happens, execution
+	 * that was for a before* callback and that method returned false. If this happens, execution
 	 * of any other callbacks after the offending callback will not occur.
 	 */
 	public function invoke($model, $name, $mustExist=true)
@@ -167,7 +167,8 @@ class CallBack
 			$registry = array();
 		else
 			$registry = $this->registry[$name];
-
+		
+		// TODO: Fix the code below.
 		$first = substr($name,0,6);
 
 		// starts with /(after|before)_(create|update)/

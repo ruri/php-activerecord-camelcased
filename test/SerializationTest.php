@@ -55,14 +55,14 @@ class SerializationTest extends DatabaseTest
 
 	public function testMethods()
 	{
-		$a = $this->_a(array('methods' => array('upper_name')));
-		$this->assertEquals('ANCIENT ART OF MAIN TANKING', $a['upper_name']);
+		$a = $this->_a(array('methods' => array('upperName')));
+		$this->assertEquals('ANCIENT ART OF MAIN TANKING', $a['upperName']);
 	}
 
 	public function testMethodsTakesAString()
 	{
-		$a = $this->_a(array('methods' => 'upper_name'));
-		$this->assertEquals('ANCIENT ART OF MAIN TANKING', $a['upper_name']);
+		$a = $this->_a(array('methods' => 'upperName'));
+		$this->assertEquals('ANCIENT ART OF MAIN TANKING', $a['upperName']);
 	}
 
 	// methods added last should we shuld have value of the method in our json
