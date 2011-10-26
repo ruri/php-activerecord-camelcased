@@ -1,3 +1,37 @@
+# PHP ActiveRecord - Camelcased #
+
+PHP ActiveRecord is a great project. The only dreadful thing about it is that the code was written following a Ruby-like identifier naming convention - everything_goes_lowercase_underscorified.
+
+Yet for modern PHP the canonical (and the most popular) naming style is camelCase.
+
+I've corrected this misstep for myself and for everyone by restyling all the code of ActiveRecord from underscorified style to camel-cased one. The code is conceptually unchanged, all unit tests are being passed fine.
+
+## Where is camelCase? ##
+
+Camel case is now everywhere in ActiveRecord except database table and field names which must remain being written lowercase with underscores.
+
+All methods, member variables and local variables are restyled. String identifiers like 'lesserThan' are camelized too as they should be.
+
+Getter and setter methods of your models must also be written in camel-case. So if there is a field 'full_name' in a table, proper getter name will be getFullName().
+
+## What do I loose? ##
+
+Nothing, I think. The original documentation remains in force, except you need to read all identifiers with underscores as camel-cased.
+
+It's possible that some minor bugs will pop with time, but they should be not critical as all unit tests are being passed correctly.
+
+## What do I gain? ##
+
+Canonical and consistent style of code in your projects. As the majority has chosen camel-case for PHP, you shouldn't go against or mix different naming conventions in your code. Your code should be beautiful.
+
+## And what about updates from the master repo? ##
+
+New commits at kla/php-activerecord will be merged into this repo manually.
+
+
+
+The original readme is below:
+
 # PHP ActiveRecord #
 
 Version 1.0
